@@ -1,0 +1,285 @@
+@import 'reset.min';
+
+$font-family: 'Lato', sans-serif;
+$font-size: 25px;
+$color1: #57606f;
+$color2: #ffffff;
+$color3: #1abc9c;
+$color4: #e74c3c;
+$shadow-color: rgba(0, 0, 0, .2);
+$box-shadow: 0 2px 5px $shadow-color;
+$bxshdw: 0 7px 10px $shadow-color;
+$transition: .3s;
+$cursor: pointer;
+$task-content-size: 30px;
+
+body {
+  font-family: $font-family;
+  font-size: $font-size;
+  color: $color1;
+  background-color: rgba(0, 0, 0, .05);
+  min-width: 200px;
+
+  ::selection {
+    background: $color3;
+    color: $color2;
+  }
+}
+
+@keyframes zoom {
+  from {transform: scale(0);}
+  to {transform: scale(1);}
+}
+
+header {
+  height: 15vh;
+  background-image: url(../images/drudge-logo.svg);
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-top: 20px;
+  animation: zoom .5s;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-style: italic;
+  margin: 20px 0;
+}
+
+#tab-wrap {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+#wrap {
+  width: 700px;
+  max-width: 95%;
+  margin: auto;
+  text-align: center;
+}
+
+.tab-btns {
+  font-size: 1rem;
+  font-family: $font-family;
+  color: $color1;
+  padding: 5px 10px;
+  background-color: $color2;
+  box-shadow: $box-shadow;
+  transition: $transition;
+  border: transparent;
+  outline: none;
+  border-radius: 0;
+
+  &:first-child {
+    color: $color2;
+    background-color: $color3;
+  }
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: $bxshdw;
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.task-containers {
+  box-shadow: $box-shadow;
+  padding: 0;
+  transform: scale(1);
+  display: none;
+  
+  &:first-child {
+    display: block;
+  }
+
+  &:nth-child(2) {
+    .marker {
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0% {background-color: $color2;}
+      50% {background-color: $color3;}
+    }
+  }
+
+  &:nth-child(3) {
+    .marker {
+      background-color: $color3;
+      color: $color2;
+
+      &:hover {
+        cursor: auto;
+      }
+    }
+
+    span {
+      text-decoration: line-through;
+      text-decoration-color: $color1;
+    }
+  }
+}
+
+@keyframes show {
+  from {transform: translate(-50px);}
+  to {transform: translate(0);}
+}
+
+.task {
+  display: flex;
+  background-color: $color2;
+  justify-content: space-between;
+  padding: 10px;
+  animation: show .5s;
+
+  &:not(:first-child) {
+    border-top: 1px solid $shadow-color;
+  }
+
+  &:nth-child(2n) {
+    animation-duration: 1s;
+  }
+
+  span {
+    flex: .95;
+    text-align: left;
+    text-transform: capitalize;
+    font-weight: 300;
+    word-wrap: break-word;
+    word-break: break-all;
+    line-height: $task-content-size;
+  }
+}
+
+#stack {
+  height: 5px;
+  max-width: 98%;
+  margin: auto;
+  background-color: $color2;
+  box-shadow: $box-shadow;
+  display: none;
+}
+
+#task-info {
+  margin-top: 20px;
+  font-style: italic;
+  opacity: .5;
+}
+
+@mixin action-btn($size, $fntsz, $clr1, $borrad, $bgclr) {
+  width: $size;
+  height: $size;
+  font-size: $fntsz;
+  color: $clr1;
+  background-color: $color2;
+  border-radius: $borrad;
+  border: none;
+  transition: $transition;
+
+  &:hover {
+    color: $color2;
+    background-color: $bgclr;
+    box-shadow: $bxshdw;
+    cursor: $cursor;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.marker {
+  @include action-btn($task-content-size, 20px, $color2, 100%, $color3);
+  border: 1px solid $color3;
+
+  &:hover {
+    border-color: transparent;
+    animation: none !important;
+  }
+}
+
+.remove {
+  @include action-btn($task-content-size, 20px, $color4, 100%, $color4);
+
+  &::selection {
+    background: $color4;
+  }
+}
+
+form {
+  margin: 20px auto;
+  display: flex;
+  justify-content: space-between;
+  transition: $transition;
+
+  * {
+    padding: 10px;
+    font-family: $font-family;
+    font-size: $font-size;
+    border-radius: 0;
+    border: 1px solid transparent;
+    box-shadow: $box-shadow;
+    outline: none;
+  }
+
+  input[type="text"] {
+    flex: .8;
+    max-width: 80%;
+  }
+
+  ::placeholder {
+    color: $color1;
+    font-style: italic;
+    opacity: .5;
+  }
+
+  input[type="submit"] {
+    flex: .18;
+    max-width: 18%;
+    background-color: $color3;
+    color: $color2;
+    transition: $transition;
+
+    &:hover {
+      background-color: $color2;
+      color: $color3;
+      box-shadow: 0 10px 15px $shadow-color;
+      cursor: $cursor;
+    }
+  }
+}
+
+@media (max-width: 460px) {
+  $font-size: 18px;
+
+  body {
+    font-size: $font-size;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  form {
+    * {
+      font-size: $font-size;
+    }
+
+    input[type="text"] {
+      flex: .7;
+      max-width: 70%;
+    }
+
+    input[type="submit"] {
+      flex: .28;
+      max-width: 28%;
+    }
+  }
+}
