@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Clinton Nkwocha">
+    <meta name="description" content="Drudge is a full-stack progressive web to-do app.">
+    <meta name="keywords" content="drudge, to-do, to-do app">
+    <meta name="language" content="English">
+    <meta name="theme-color" content="">
+    <meta name="viewport" content="width=device-width">
+    <title>Drudge - Organise your life.</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="container">
+      <header>
+      </header>
+      <h1>Good day Human</h1>
+      <div id="wrap">
+        <div id="tab-wrap">
+          <button class="tab-btns">To Do</button>
+          <button class="tab-btns">Doing</button>
+          <button class="tab-btns">Done</button>
+        </div>
+        <div id="tab-cards">
+          <section class="task-containers">
+          </section>
+          <section class="task-containers">
+          </section>
+          <section class="task-containers">
+          </section>
+          <div id="stack"></div>
+          <p id="task-info">You have no task to do.</p>
+        </div>
+        <form id="form">
+          <input type="text" id="task-name" placeholder="You know you should..." required>
+          <input type="submit" id="submit" value="Enter">
+        </form>
+      </div>
+    </div>
+    <script src="/dist/bundle.js"></script>
+  </body>
+</html>
