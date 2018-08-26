@@ -11,8 +11,8 @@ const formHandler = (e) => {
 
   if (taskName.length < 1) return;
 
-  const taskId = addTaskToDOM(taskName);
-  saveTask({ taskId, taskName });
+  const { taskId, taskStatus } = addTaskToDOM(taskName);
+  saveTask({ taskId, taskName, taskStatus });
 
   form.reset();
 };
@@ -24,7 +24,8 @@ const formHandler = (e) => {
 
   if (taskList.length < 1) return;
 
-  taskList.forEach(({ taskId, taskName }) => addTaskToDOM(taskName, taskId));
+  taskList
+    .forEach(({ taskId, taskName, taskStatus }) => addTaskToDOM(taskName, taskId, taskStatus));
 })();
 
 form.addEventListener('submit', formHandler);

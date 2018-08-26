@@ -30,43 +30,38 @@ const removeTask = (taskId) => {
   }
 };
 
-const moveTask = (taskId) => {
-  let newId = taskId.split('-');
-  const reusedName = document.querySelector(`#${taskId} span`).innerHTML;
+const moveTask = (taskId, taskStatus) => {
   const task = document.querySelector(`#${taskId}`);
+  const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
+  const clonedTask = task.cloneNode(true);
+  const clonedTaskId = clonedTask.id;
 
-  const handleTask = (taskContainerNumber) => {
+  const handleMovedTask = (taskContainerNumber) => {
     removeTask(taskId);
-
-    const clonedTask = task.cloneNode(true);
-    newId = newId.join('-');
-    clonedTask.id = newId;
-
-    const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
     taskContainers[taskContainerNumber].appendChild(clonedTask);
 
     // Cloned elements do not inherit event listeners, so open their ears
-    document.querySelector(`#${newId} .marker`).addEventListener('click', () => {
-      moveTask(newId);
+    document.querySelector(`#${clonedTaskId} .marker`).addEventListener('click', () => {
+      moveTask(clonedTaskId, taskStatus);
     });
 
-    document.querySelector(`#${newId} .remove`).addEventListener('click', () => {
-      removeTask(newId);
+    document.querySelector(`#${clonedTaskId} .remove`).addEventListener('click', () => {
+      removeTask(clonedTaskId);
     });
 
-    saveTask({ taskId: newId, taskName: reusedName });
+    saveTask({ taskId: clonedTaskId, taskName: document.querySelector(`#${clonedTaskId} span`).innerHTML, taskStatus });
   };
 
-  if (taskId.indexOf('todo') !== -1) {
-    newId.splice(newId.indexOf('todo'), 1, 'doing');
-    handleTask(1);
-  } else if (taskId.indexOf('doing') !== -1) {
-    newId.splice(newId.indexOf('doing'), 1, 'done');
-    handleTask(2);
+  if (taskStatus === 'todo') {
+    taskStatus = 'doing';
+    handleMovedTask(1);
+  } else if (taskStatus === 'doing') {
+    taskStatus = 'done';
+    handleMovedTask(2);
   }
 };
 
-const createTask = (taskName, taskId = `task-${new Date().getTime()}-todo`) => {
+const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatus = 'todo') => {
   const taskElement = document.createElement('div');
   taskElement.classList.add('task');
   taskElement.setAttribute('id', taskId);
@@ -75,7 +70,7 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}-todo`) => {
   marker.classList.add('marker');
   marker.innerText = '✓';
   marker.addEventListener('click', () => {
-    moveTask(taskId);
+    moveTask(taskId, taskStatus);
   });
 
   const span = document.createElement('span');
@@ -92,25 +87,24 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}-todo`) => {
   taskElement.appendChild(span);
   taskElement.appendChild(remove);
 
-  return { taskId, taskElement };
+  return { taskId, taskElement, taskStatus };
 };
 
-const addTaskToDOM = (taskName, id) => {
-  const { taskId, taskElement } = createTask(taskName, id);
-  const splittedTaskId = taskId.split('-');
+const addTaskToDOM = (taskName, id, status) => {
+  const { taskId, taskElement, taskStatus } = createTask(taskName, id, status);
   const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
   const taskContainer0 = taskContainers[0];
 
-  if (splittedTaskId.indexOf('todo') !== -1) {
+  if (taskStatus === 'todo') {
     taskContainer0.appendChild(taskElement);
-  } else if (splittedTaskId.indexOf('doing') !== -1) {
+  } else if (taskStatus === 'doing') {
     taskContainers[1].appendChild(taskElement);
   } else {
     taskContainers[2].appendChild(taskElement);
   }
 
   countTasks(taskContainer0);
-  return taskId;
+  return { taskId, taskStatus };
 };
 
 const fetchTasks = () => {
