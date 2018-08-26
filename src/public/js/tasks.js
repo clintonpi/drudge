@@ -95,6 +95,24 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}-todo`) => {
   return { taskId, taskElement };
 };
 
+const addTaskToDOM = (taskName, id) => {
+  const { taskId, taskElement } = createTask(taskName, id);
+  const splittedTaskId = taskId.split('-');
+  const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
+  const taskContainer0 = taskContainers[0];
+
+  if (splittedTaskId.indexOf('todo') !== -1) {
+    taskContainer0.appendChild(taskElement);
+  } else if (splittedTaskId.indexOf('doing') !== -1) {
+    taskContainers[1].appendChild(taskElement);
+  } else {
+    taskContainers[2].appendChild(taskElement);
+  }
+
+  countTasks(taskContainer0);
+  return taskId;
+};
+
 const fetchTasks = () => {
   const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
 
@@ -103,4 +121,6 @@ const fetchTasks = () => {
   return [];
 };
 
-export { saveTask, createTask, fetchTasks };
+export {
+  saveTask, createTask, addTaskToDOM, fetchTasks
+};
