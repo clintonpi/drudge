@@ -10,16 +10,17 @@ const activateTabs = () => {
       if (taskContainers.indexOf(taskContainer) === tabNumber) {
         const formStyle = document.querySelector('#form').style;
         taskContainerStyle.display = 'block';
+        countTasks(taskContainer);
 
         if (taskContainer === taskContainers[0]) {
           formStyle.visibility = 'visible';
           formStyle.opacity = 1;
-        } else {
-          formStyle.visibility = 'hidden';
-          formStyle.opacity = 0;
+          return;
         }
 
-        countTasks(taskContainer);
+        formStyle.visibility = 'hidden';
+        formStyle.opacity = 0;
+
         return;
       }
 

@@ -49,15 +49,21 @@ const moveTask = (taskId, taskStatus) => {
       removeTask(clonedTaskId);
     });
 
-    saveTask({ taskId: clonedTaskId, taskName: document.querySelector(`#${clonedTaskId} span`).innerHTML, taskStatus });
+    const taskName = document.querySelector(`#${clonedTaskId} span`).innerHTML;
+    saveTask({ taskId: clonedTaskId, taskName, taskStatus });
   };
 
-  if (taskStatus === 'todo') {
-    taskStatus = 'doing';
-    handleMovedTask(1);
-  } else if (taskStatus === 'doing') {
-    taskStatus = 'done';
-    handleMovedTask(2);
+  switch (taskStatus) {
+    case 'todo':
+      taskStatus = 'doing';
+      handleMovedTask(1);
+      break;
+    case 'doing':
+      taskStatus = 'done';
+      handleMovedTask(2);
+      break;
+    default:
+      break;
   }
 };
 
@@ -95,12 +101,16 @@ const addTaskToDOM = (taskName, id, status) => {
   const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
   const taskContainer0 = taskContainers[0];
 
-  if (taskStatus === 'todo') {
-    taskContainer0.appendChild(taskElement);
-  } else if (taskStatus === 'doing') {
-    taskContainers[1].appendChild(taskElement);
-  } else {
-    taskContainers[2].appendChild(taskElement);
+  switch (taskStatus) {
+    case 'todo':
+      taskContainer0.appendChild(taskElement);
+      break;
+    case 'doing':
+      taskContainers[1].appendChild(taskElement);
+      break;
+    default:
+      taskContainers[2].appendChild(taskElement);
+      break;
   }
 
   countTasks(taskContainer0);
