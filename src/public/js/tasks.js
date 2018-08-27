@@ -1,8 +1,10 @@
 import { LOCAL_STORAGE_KEY } from '../../../constants';
 import countTasks from './count';
 
-const TODO = 'todo';
-const DOING = 'doing';
+const TASK_STATUS = {
+  TODO: 'todo',
+  DOING: 'doing'
+};
 
 const saveTask = (taskObject) => {
   const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -57,11 +59,11 @@ const moveTask = (taskId, taskStatus) => {
   };
 
   switch (taskStatus) {
-    case TODO:
-      taskStatus = DOING;
+    case TASK_STATUS.TODO:
+      taskStatus = TASK_STATUS.DOING;
       handleMovedTask(1);
       break;
-    case DOING:
+    case TASK_STATUS.DOING:
       taskStatus = 'done';
       handleMovedTask(2);
       break;
@@ -70,7 +72,7 @@ const moveTask = (taskId, taskStatus) => {
   }
 };
 
-const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatus = TODO) => {
+const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatus = TASK_STATUS.TODO) => {
   const taskElement = document.createElement('div');
   taskElement.classList.add('task');
   taskElement.setAttribute('id', taskId);
@@ -105,10 +107,10 @@ const addTaskToDOM = (taskName, id, status) => {
   const taskContainer0 = taskContainers[0];
 
   switch (taskStatus) {
-    case TODO:
+    case TASK_STATUS.TODO:
       taskContainer0.appendChild(taskElement);
       break;
-    case DOING:
+    case TASK_STATUS.DOING:
       taskContainers[1].appendChild(taskElement);
       break;
     default:
