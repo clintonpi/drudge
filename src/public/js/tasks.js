@@ -155,9 +155,13 @@ const addTaskToDOM = (taskName, id, status) => {
 };
 
 const fetchTasks = () => {
-  const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+  let taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
 
-  if (taskStr) return JSON.parse(taskStr);
+  if (taskStr) {
+    taskStr = JSON.parse(taskStr);
+    // Sort to avoid edited tasks appearing at the bottom due to queing effect of local storage
+    return taskStr.sort((a, b) => a.taskId > b.taskId);
+  }
 
   return [];
 };
