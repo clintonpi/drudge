@@ -35,6 +35,25 @@ const removeTask = (taskId) => {
   }
 };
 
+const editTask = (taskId, taskStatus) => {
+  const taskSpan = document.querySelector(`#${taskId} span`);
+  taskSpan.setAttribute('contenteditable', 'true');
+  taskSpan.focus();
+
+  taskSpan.addEventListener('blur', () => {
+    taskSpan.setAttribute('contenteditable', 'false');
+    const taskName = taskSpan.innerText;
+
+    // remove from local storage but not from DOM because task will be resaved
+    const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const taskList = JSON.parse(taskStr);
+    const filteredList = taskList.filter(item => item.taskId !== taskId);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredList));
+
+    saveTask({ taskId, taskName, taskStatus });
+  });
+};
+
 const moveTask = (taskId, taskStatus) => {
   const task = document.querySelector(`#${taskId}`);
   const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
@@ -48,6 +67,10 @@ const moveTask = (taskId, taskStatus) => {
     // Cloned elements do not inherit event listeners, so open their ears
     document.querySelector(`#${clonedTaskId} .marker`).addEventListener('click', () => {
       moveTask(clonedTaskId, taskStatus);
+    });
+
+    document.querySelector(`#${clonedTaskId} .edit`).addEventListener('click', () => {
+      editTask(clonedTaskId, taskStatus);
     });
 
     document.querySelector(`#${clonedTaskId} .remove`).addEventListener('click', () => {
@@ -85,7 +108,15 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatu
   });
 
   const span = document.createElement('span');
+  span.setAttribute('spellcheck', 'false');
   span.innerHTML = taskName;
+
+  const edit = document.createElement('button');
+  edit.classList.add('edit');
+  edit.innerText = '✎';
+  edit.addEventListener('click', () => {
+    editTask(taskId, taskStatus);
+  });
 
   const remove = document.createElement('button');
   remove.classList.add('remove');
@@ -96,6 +127,7 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatu
 
   taskElement.appendChild(marker);
   taskElement.appendChild(span);
+  taskElement.appendChild(edit);
   taskElement.appendChild(remove);
 
   return { taskId, taskElement, taskStatus };

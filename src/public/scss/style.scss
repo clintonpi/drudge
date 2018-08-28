@@ -148,13 +148,17 @@ h1 {
   }
 
   span {
-    flex: .95;
+    flex: .9;
     text-align: left;
     text-transform: capitalize;
     font-weight: 300;
     word-wrap: break-word;
     word-break: break-all;
     line-height: $task-content-size;
+
+    &:focus {
+      outline: 1px solid $color3;
+    }
   }
 }
 
@@ -202,6 +206,15 @@ h1 {
   &:hover {
     border-color: transparent;
     animation: none !important;
+  }
+}
+
+.edit, .done {
+  @include action-btn($task-content-size, 20px, $color1, 100%, $color1);
+  font-weight: bold;
+
+  &::selection {
+    background: $color1;
   }
 }
 
