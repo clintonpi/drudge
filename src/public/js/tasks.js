@@ -51,6 +51,12 @@ const editTask = (taskId) => {
       .map(item => (item.taskId === taskId ? Object.assign(item, { taskName }) : item));
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredList));
   });
+
+  taskSpan.addEventListener('keydown', (e) => {
+    if (e.which === 13) {
+      taskSpan.blur();
+    }
+  });
 };
 
 const moveTask = (taskId, taskStatus) => {
