@@ -35,7 +35,7 @@ const removeTask = (taskId) => {
   }
 };
 
-const editTask = (taskId, taskStatus) => {
+const editTask = (taskId) => {
   const taskSpan = document.querySelector(`#${taskId} span`);
   taskSpan.setAttribute('contenteditable', 'true');
   taskSpan.focus();
@@ -47,10 +47,9 @@ const editTask = (taskId, taskStatus) => {
     // remove from local storage but not from DOM because task will be resaved
     const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
     const taskList = JSON.parse(taskStr);
-    const filteredList = taskList.filter(item => item.taskId !== taskId);
+    const filteredList = taskList
+      .map(item => (item.taskId === taskId ? Object.assign(item, { taskName }) : item));
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredList));
-
-    saveTask({ taskId, taskName, taskStatus });
   });
 };
 
@@ -115,7 +114,7 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatu
   edit.classList.add('edit');
   edit.innerText = '✎';
   edit.addEventListener('click', () => {
-    editTask(taskId, taskStatus);
+    editTask(taskId);
   });
 
   const remove = document.createElement('button');
@@ -155,13 +154,9 @@ const addTaskToDOM = (taskName, id, status) => {
 };
 
 const fetchTasks = () => {
-  let taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+  const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
 
-  if (taskStr) {
-    taskStr = JSON.parse(taskStr);
-    // Sort to avoid edited tasks appearing at the bottom due to queing effect of local storage
-    return taskStr.sort((a, b) => a.taskId > b.taskId);
-  }
+  if (taskStr) return JSON.parse(taskStr);
 
   return [];
 };
