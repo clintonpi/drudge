@@ -36,7 +36,7 @@ const removeTask = (taskId) => {
 };
 
 const editTask = (taskId) => {
-  const taskSpan = document.querySelector(`#${taskId} span`);
+  const taskSpan = document.querySelectorAll(`#${taskId} .task-name`)[0];
   taskSpan.setAttribute('contenteditable', 'true');
   taskSpan.focus();
 
@@ -107,6 +107,7 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatu
   });
 
   const span = document.createElement('span');
+  span.classList.add('task-name');
   span.setAttribute('spellcheck', 'false');
   span.innerHTML = taskName;
 
