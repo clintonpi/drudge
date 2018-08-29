@@ -88,7 +88,7 @@ const moveTask = (taskId, taskStatus) => {
       removeTask(clonedTaskId);
     });
 
-    const taskName = document.querySelector(`#${clonedTaskId} span`).innerHTML;
+    const taskName = document.querySelector(`#${clonedTaskId} span`).innerText;
     saveTask({ taskId: clonedTaskId, taskName, taskStatus });
   };
 
@@ -121,7 +121,7 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatu
   const span = document.createElement('span');
   span.classList.add('task-name');
   span.setAttribute('spellcheck', 'false');
-  span.innerHTML = taskName;
+  span.innerText = taskName;
 
   const edit = document.createElement('button');
   edit.classList.add('edit');
