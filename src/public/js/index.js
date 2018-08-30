@@ -1,5 +1,6 @@
 import { saveTask, addTaskToDOM, fetchTasks } from './tasks';
 import activateTabs from './tab';
+import sanitizeStr from './utils';
 import '../scss/style.scss';
 
 const form = document.querySelector('#form');
@@ -7,7 +8,8 @@ const form = document.querySelector('#form');
 const formHandler = (e) => {
   e.preventDefault();
 
-  const taskName = document.querySelector('#task-name').value;
+  let taskName = document.querySelector('#task-name').value;
+  taskName = sanitizeStr(taskName);
 
   if (taskName.length < 1) return;
 
