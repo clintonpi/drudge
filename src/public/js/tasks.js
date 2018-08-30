@@ -1,5 +1,6 @@
 import { LOCAL_STORAGE_KEY } from '../../../constants';
 import countTasks from './count';
+import sanitizeStr from './utils';
 
 const TASK_STATUS = {
   TODO: 'todo',
@@ -43,7 +44,8 @@ const editTask = (taskId) => {
 
   taskSpan.addEventListener('blur', () => {
     taskSpan.setAttribute('contenteditable', 'false');
-    const taskName = taskSpan.innerText;
+    const taskName = sanitizeStr(taskSpan.innerText);
+    taskSpan.innerText = taskName;
 
     if (taskName.length < 1) {
       taskSpan.innerText = fallbackText;
@@ -174,6 +176,4 @@ const fetchTasks = () => {
   return [];
 };
 
-export {
-  saveTask, createTask, addTaskToDOM, fetchTasks
-};
+export { saveTask, addTaskToDOM, fetchTasks };
