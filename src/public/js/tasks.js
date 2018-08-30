@@ -39,10 +39,16 @@ const editTask = (taskId) => {
   const taskSpan = document.querySelectorAll(`#${taskId} .task-name`)[0];
   taskSpan.setAttribute('contenteditable', 'true');
   taskSpan.focus();
+  const fallbackText = taskSpan.innerText;
 
   taskSpan.addEventListener('blur', () => {
     taskSpan.setAttribute('contenteditable', 'false');
     const taskName = taskSpan.innerText;
+
+    if (taskName.length < 1) {
+      taskSpan.innerText = fallbackText;
+      return;
+    }
 
     // remove from local storage but not from DOM because task will be resaved
     const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
