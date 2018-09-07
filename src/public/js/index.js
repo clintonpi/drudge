@@ -1,5 +1,4 @@
 import { saveTask, addTaskToDOM, fetchTasks } from './tasks';
-import activateTabs from './tab';
 import sanitizeStr from './utils';
 import '../scss/style.scss';
 
@@ -21,8 +20,6 @@ const formHandler = (e) => {
 
 (() => {
   const taskList = fetchTasks();
-
-  activateTabs();
 
   if (taskList.length < 1) return;
 

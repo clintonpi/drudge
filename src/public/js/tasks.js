@@ -4,7 +4,7 @@ import sanitizeStr from './utils';
 
 const TASK_STATUS = {
   TODO: 'todo',
-  DOING: 'doing'
+  DONE: 'done'
 };
 
 const saveTask = (taskObject) => {
@@ -18,14 +18,9 @@ const saveTask = (taskObject) => {
 };
 
 const removeTask = (taskId) => {
-  const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
   const task = document.querySelector(`#${taskId}`);
-  taskContainers.forEach((taskContainer) => {
-    if (task.parentElement === taskContainer) {
-      taskContainer.removeChild(task);
-      countTasks(taskContainer);
-    }
-  });
+  document.querySelector('#task-container').removeChild(task);
+  countTasks();
 
   const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
 
@@ -37,18 +32,18 @@ const removeTask = (taskId) => {
 };
 
 const editTask = (taskId) => {
-  const taskSpan = document.querySelectorAll(`#${taskId} .task-name`)[0];
-  taskSpan.setAttribute('contenteditable', 'true');
-  taskSpan.focus();
-  const fallbackText = taskSpan.innerText;
+  const taskNameSpan = document.querySelectorAll(`#${taskId} .task-name`)[0];
+  taskNameSpan.setAttribute('contenteditable', 'true');
+  taskNameSpan.focus();
+  const fallbackText = taskNameSpan.innerText;
 
-  taskSpan.addEventListener('blur', () => {
-    taskSpan.setAttribute('contenteditable', 'false');
-    const taskName = sanitizeStr(taskSpan.innerText);
-    taskSpan.innerText = taskName;
+  taskNameSpan.addEventListener('blur', () => {
+    taskNameSpan.setAttribute('contenteditable', 'false');
+    const taskName = sanitizeStr(taskNameSpan.innerText);
+    taskNameSpan.innerText = taskName;
 
     if (taskName.length < 1) {
-      taskSpan.innerText = fallbackText;
+      taskNameSpan.innerText = fallbackText;
       return;
     }
 
@@ -60,52 +55,27 @@ const editTask = (taskId) => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredList));
   });
 
-  taskSpan.addEventListener('keydown', (e) => {
+  taskNameSpan.addEventListener('keydown', (e) => {
     if (e.which === 13) {
-      taskSpan.blur();
+      taskNameSpan.blur();
     }
   });
 };
 
-const moveTask = (taskId, taskStatus) => {
-  const task = document.querySelector(`#${taskId}`);
-  const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
-  const clonedTask = task.cloneNode(true);
-  const clonedTaskId = clonedTask.id;
+const handleCompletedTask = (taskId) => {
+  document.querySelector(`#${taskId}`).classList.add('done-task');
+};
 
-  const handleMovedTask = (taskContainerNumber) => {
-    removeTask(taskId);
-    taskContainers[taskContainerNumber].appendChild(clonedTask);
+const completeTask = (taskId) => {
+  handleCompletedTask(taskId);
 
-    // Cloned elements do not inherit event listeners, so open their ears
-    document.querySelector(`#${clonedTaskId} .marker`).addEventListener('click', () => {
-      moveTask(clonedTaskId, taskStatus);
-    });
-
-    document.querySelector(`#${clonedTaskId} .edit`).addEventListener('click', () => {
-      editTask(clonedTaskId, taskStatus);
-    });
-
-    document.querySelector(`#${clonedTaskId} .remove`).addEventListener('click', () => {
-      removeTask(clonedTaskId);
-    });
-
-    const taskName = document.querySelector(`#${clonedTaskId} span`).innerText;
-    saveTask({ taskId: clonedTaskId, taskName, taskStatus });
-  };
-
-  switch (taskStatus) {
-    case TASK_STATUS.TODO:
-      taskStatus = TASK_STATUS.DOING;
-      handleMovedTask(1);
-      break;
-    case TASK_STATUS.DOING:
-      taskStatus = 'done';
-      handleMovedTask(2);
-      break;
-    default:
-      break;
-  }
+  const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+  const taskList = JSON.parse(taskStr);
+  const filteredList = taskList
+    .map(item => (item.taskId === taskId ? Object.assign(item, {
+      taskStatus: TASK_STATUS.DONE
+    }) : item));
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredList));
 };
 
 const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatus = TASK_STATUS.TODO) => {
@@ -117,7 +87,7 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatu
   marker.classList.add('marker');
   marker.innerText = '✓';
   marker.addEventListener('click', () => {
-    moveTask(taskId, taskStatus);
+    completeTask(taskId);
   });
 
   const span = document.createElement('span');
@@ -149,22 +119,15 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatu
 
 const addTaskToDOM = (taskName, id, status) => {
   const { taskId, taskElement, taskStatus } = createTask(taskName, id, status);
-  const taskContainers = Array.from(document.querySelectorAll('.task-containers'));
-  const taskContainer0 = taskContainers[0];
 
-  switch (taskStatus) {
-    case TASK_STATUS.TODO:
-      taskContainer0.appendChild(taskElement);
-      break;
-    case TASK_STATUS.DOING:
-      taskContainers[1].appendChild(taskElement);
-      break;
-    default:
-      taskContainers[2].appendChild(taskElement);
-      break;
+  const taskContainer = document.querySelector('#task-container');
+  taskContainer.appendChild(taskElement);
+
+  if (taskStatus === TASK_STATUS.DONE) {
+    handleCompletedTask(taskId);
   }
 
-  countTasks(taskContainer0);
+  countTasks();
   return { taskId, taskStatus };
 };
 

@@ -48,83 +48,17 @@ h1 {
   margin: 20px 0;
 }
 
-#tab-wrap {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
-}
-
-#wrap {
+main {
   width: 700px;
   max-width: 95%;
   margin: auto;
   text-align: center;
 }
 
-.tab-btns {
-  font-size: 1rem;
-  font-family: $font-family;
-  color: $color1;
-  padding: 5px 10px;
-  background-color: $color2;
-  box-shadow: $box-shadow;
-  transition: $transition;
-  border: transparent;
-  outline: none;
-  border-radius: 0;
-
-  &:first-child {
-    color: $color2;
-    background-color: $color3;
-  }
-
-  &:hover {
-    cursor: pointer;
-    box-shadow: $bxshdw;
-    transform: scale(1.05);
-  }
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.task-containers {
+#task-container {
   box-shadow: $box-shadow;
   padding: 0;
   transform: scale(1);
-  display: none;
-  
-  &:first-child {
-    display: block;
-  }
-
-  &:nth-child(2) {
-    .marker {
-      animation: blink 2s infinite;
-    }
-
-    @keyframes blink {
-      0% {background-color: $color2;}
-      50% {background-color: $color3;}
-    }
-  }
-
-  &:nth-child(3) {
-    .marker {
-      background-color: $color3;
-      color: $color2;
-
-      &:hover {
-        cursor: auto;
-      }
-    }
-
-    span {
-      text-decoration: line-through;
-      text-decoration-color: $color1;
-    }
-  }
 }
 
 @keyframes show {
@@ -145,6 +79,21 @@ h1 {
 
   &:nth-child(2n) {
     animation-duration: 1s;
+  }
+}
+
+.done-task {
+  .marker {
+    background-color: $color3;
+    color: $color2;
+
+    &:hover {
+      cursor: default;
+    }
+  }
+
+  .task-name {
+    text-decoration: line-through $color1;
   }
 }
 
@@ -170,12 +119,6 @@ h1 {
   background-color: $color2;
   box-shadow: $box-shadow;
   display: none;
-}
-
-#task-info {
-  margin-top: 20px;
-  font-style: italic;
-  opacity: .5;
 }
 
 @mixin action-btn($size, $fntsz, $clr1, $borrad, $bgclr) {
