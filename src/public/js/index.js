@@ -1,4 +1,6 @@
-import { saveTask, addTaskToDOM, fetchTasks } from './tasks';
+import {
+  saveTask, fetchTasks, removeCompletedTasks, countTasks, addTaskToDOM
+} from './tasks';
 import sanitizeStr from './utils';
 import '../scss/style.scss';
 
@@ -19,6 +21,8 @@ const formHandler = (e) => {
 };
 
 (() => {
+  countTasks();
+
   const taskList = fetchTasks();
 
   if (taskList.length < 1) return;
@@ -27,4 +31,5 @@ const formHandler = (e) => {
     .forEach(({ taskId, taskName, taskStatus }) => addTaskToDOM(taskName, taskId, taskStatus));
 })();
 
+document.querySelector('#info-wrap button').addEventListener('click', removeCompletedTasks);
 form.addEventListener('submit', formHandler);

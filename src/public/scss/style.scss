@@ -170,6 +170,43 @@ main {
   }
 }
 
+#info-wrap {
+  margin-top: 20px;
+  display: none;
+  justify-content: space-evenly;
+
+  * {
+    font-size: 16px;
+    font-style: italic;
+    padding: 5px;
+  }
+
+  button {
+    background-color: $color2;
+    color: $color4;
+    font-family: $font-family;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    box-shadow: $box-shadow;
+    transition: $transition;
+    cursor: pointer;
+    outline: none;
+    display: none;
+    animation: show .5s;
+
+    &:hover {
+      box-shadow: $bxshdw;
+      background-color: $color4;
+      color: $color2;
+    }
+
+    &::selection {
+      background: $color4;
+    }
+  }
+}
+
 form {
   margin: 20px auto;
   display: flex;

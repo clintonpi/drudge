@@ -1,10 +1,51 @@
 import { LOCAL_STORAGE_KEY } from '../../../constants';
-import countTasks from './count';
 import sanitizeStr from './utils';
 
 const TASK_STATUS = {
   TODO: 'todo',
   DONE: 'done'
+};
+
+const fetchTasks = () => {
+  const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+  if (taskStr) return JSON.parse(taskStr);
+
+  return [];
+};
+
+const countTasks = () => {
+  const taskList = fetchTasks();
+  const todoTasksLength = taskList.filter(task => task.taskStatus === TASK_STATUS.TODO).length;
+  const doneTasksLength = taskList.filter(task => task.taskStatus === TASK_STATUS.DONE).length;
+
+  document.querySelector('#todo-count').innerText = todoTasksLength;
+  document.querySelector('#done-count').innerText = doneTasksLength;
+
+  (() => {
+    const infoWrap = document.querySelector('#info-wrap').style;
+    const stackStyle = document.querySelector('#stack').style;
+    const displayNone = 'none';
+
+    if (taskList.length > 1) {
+      infoWrap.display = 'flex';
+      stackStyle.display = 'block';
+
+      const removeCompletedBtnStyle = document.querySelector('#info-wrap button').style;
+
+      if (doneTasksLength > 1) {
+        removeCompletedBtnStyle.display = 'inline';
+        return;
+      }
+
+      removeCompletedBtnStyle.display = displayNone;
+
+      return;
+    }
+
+    infoWrap.display = displayNone;
+    stackStyle.display = displayNone;
+  })();
 };
 
 const saveTask = (taskObject) => {
@@ -15,12 +56,13 @@ const saveTask = (taskObject) => {
 
   taskList.push(taskObject);
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(taskList));
+
+  countTasks();
 };
 
 const removeTask = (taskId) => {
   const task = document.querySelector(`#${taskId}`);
   document.querySelector('#task-container').removeChild(task);
-  countTasks();
 
   const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
 
@@ -28,6 +70,18 @@ const removeTask = (taskId) => {
     const taskList = JSON.parse(taskStr);
     const filteredList = taskList.filter(item => item.taskId !== taskId);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredList));
+  }
+
+  countTasks();
+};
+
+const removeCompletedTasks = () => {
+  const taskList = fetchTasks();
+
+  if (taskList.length > 0) {
+    taskList.forEach((task) => {
+      if (task.taskStatus === TASK_STATUS.DONE) removeTask(task.taskId);
+    });
   }
 };
 
@@ -76,6 +130,8 @@ const completeTask = (taskId) => {
       taskStatus: TASK_STATUS.DONE
     }) : item));
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredList));
+
+  countTasks();
 };
 
 const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatus = TASK_STATUS.TODO) => {
@@ -127,16 +183,9 @@ const addTaskToDOM = (taskName, id, status) => {
     handleCompletedTask(taskId);
   }
 
-  countTasks();
   return { taskId, taskStatus };
 };
 
-const fetchTasks = () => {
-  const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-  if (taskStr) return JSON.parse(taskStr);
-
-  return [];
+export {
+  saveTask, fetchTasks, removeCompletedTasks, countTasks, addTaskToDOM
 };
-
-export { saveTask, addTaskToDOM, fetchTasks };
