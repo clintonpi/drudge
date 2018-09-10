@@ -116,35 +116,56 @@ const editTask = (taskId) => {
   });
 };
 
-const handleCompletedTask = (taskId) => {
-  document.querySelector(`#${taskId}`).classList.add('done-task');
-};
-
-const completeTask = (taskId) => {
-  handleCompletedTask(taskId);
-
+const taskStatusAction = (taskId, statusToAssign) => {
   const taskStr = localStorage.getItem(LOCAL_STORAGE_KEY);
   const taskList = JSON.parse(taskStr);
   const filteredList = taskList
     .map(item => (item.taskId === taskId ? Object.assign(item, {
-      taskStatus: TASK_STATUS.DONE
+      taskStatus: statusToAssign
     }) : item));
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filteredList));
 
   countTasks();
 };
 
+const undoTask = (taskId) => {
+  document.querySelector(`#${taskId}`).classList.remove('done-task');
+  taskStatusAction(taskId, TASK_STATUS.TODO);
+};
+
+const handleCompletedTask = (taskId) => {
+  document.querySelector(`#${taskId}`).classList.add('done-task');
+};
+
+const completeTask = (taskId) => {
+  handleCompletedTask(taskId);
+  taskStatusAction(taskId, TASK_STATUS.DONE);
+};
+
 const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatus = TASK_STATUS.TODO) => {
+  const id = 'id';
   const taskElement = document.createElement('div');
   taskElement.classList.add('task');
-  taskElement.setAttribute('id', taskId);
+  taskElement.setAttribute(id, taskId);
 
-  const marker = document.createElement('button');
+  const toggleTaskId = `toggle-${taskId}`;
+  const toggle = document.createElement('input');
+  toggle.setAttribute('type', 'checkbox');
+  toggle.setAttribute(id, toggleTaskId);
+  toggle.classList.add('toggle');
+  if (taskStatus === TASK_STATUS.DONE) toggle.checked = true;
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      completeTask(taskId);
+      return;
+    }
+    undoTask(taskId);
+  });
+
+  const marker = document.createElement('label');
+  marker.setAttribute('for', toggleTaskId);
   marker.classList.add('marker');
   marker.innerText = '✓';
-  marker.addEventListener('click', () => {
-    completeTask(taskId);
-  });
 
   const span = document.createElement('span');
   span.classList.add('task-name');
@@ -165,6 +186,7 @@ const createTask = (taskName, taskId = `task-${new Date().getTime()}`, taskStatu
     removeTask(taskId);
   });
 
+  taskElement.appendChild(toggle);
   taskElement.appendChild(marker);
   taskElement.appendChild(span);
   taskElement.appendChild(edit);

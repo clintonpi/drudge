@@ -86,10 +86,6 @@ main {
   .marker {
     background-color: $color3;
     color: $color2;
-
-    &:hover {
-      cursor: default;
-    }
   }
 
   .task-name {
@@ -118,6 +114,10 @@ main {
   margin: auto;
   background-color: $color2;
   box-shadow: $box-shadow;
+  display: none;
+}
+
+.toggle {
   display: none;
 }
 
