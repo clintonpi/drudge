@@ -3,13 +3,13 @@ const compiler = require('webpack');
 const path = require('path');
 const webpackDevMiddleWare = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
-const config = require('../../webpack.config');
-const { ENV } = require('../../constants');
+const config = require('../webpack.config');
+const { ENV } = require('../constants');
 
 const app = express();
 const ENVIRONMENT = process.env.NODE_ENV || ENV.PRODUCTION;
 
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public', 'src')));
 
 
 if (ENVIRONMENT === ENV.DEVELOPMENT) {

@@ -27,15 +27,15 @@ const config = {
   },
 
   entry: {
-    bundle: [`${__dirname}/src/public/js/index.js`]
+    bundle: [`${__dirname}/public/src/js/index.js`]
   },
 
   target: 'web',
 
   output: {
     libraryTarget: 'var',
-    path: `${__dirname}/src/public/dist/`,
-    filename: '[name].js',
+    path: `${__dirname}/public/dist/`,
+    filename: 'js/[name].js',
     chunkFilename: '[id].js',
     publicPath: '/dist/'
   },
@@ -51,10 +51,10 @@ const config = {
   ],
 
   resolve: {
-    modules: ['node_modules', 'src/public'],
+    modules: ['node_modules', 'public'],
     extensions: ['.js', '.js'],
     alias: {
-      img: path.resolve(__dirname, './src/public/images')
+      img: path.resolve(__dirname, './public/src/images')
     }
   },
 
@@ -83,7 +83,7 @@ const config = {
       },
       { test: /\.json$/, exclude: /node_modules/, loader: 'json' },
       {
-        test: /\.(png|jpg|gif|svg)$/, loader: 'file-loader?limit=100000'
+        test: /\.(png|jpg|gif|svg)$/, loader: 'file-loader?limit=100000', options: { name: 'images/[name].[ext]' }
       }
     ]
   }

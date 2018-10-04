@@ -4,8 +4,8 @@
   "description": "A full-stack JavaScript to-do app.",
   "main": "webpack.config.js",
   "scripts": {
-    "build": "rm -rf src/public/dist && NODE_ENV=PRODUCTION webpack --config webpack.config.js --progress --colors",
-    "dev": "rm -rf src/public/dist  && NODE_ENV=DEVELOPMENT node ./src/server/app.js",
+    "build": "rm -rf public/dist && NODE_ENV=PRODUCTION webpack --config webpack.config.js --progress --colors",
+    "dev": "rm -rf public/dist  && NODE_ENV=DEVELOPMENT node ./server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
