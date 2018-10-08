@@ -2,7 +2,9 @@ import {
   saveTask, fetchTasks, removeCompletedTasks, countTasks, addTaskToDOM
 } from './tasks';
 import sanitizeStr from './utils';
+import '../index.html';
 import '../scss/style.scss';
+import '../images/drudge-logo.svg';
 
 const form = document.querySelector('#form');
 

@@ -9,8 +9,7 @@ const { ENV } = require('../constants');
 const app = express();
 const ENVIRONMENT = process.env.NODE_ENV || ENV.PRODUCTION;
 
-app.use(express.static(path.join(__dirname, '..', 'public', 'src')));
-
+app.use(express.static(path.join(__dirname, '..', 'public', 'dist')));
 
 if (ENVIRONMENT === ENV.DEVELOPMENT) {
   // Attach webpack dev server to running app
@@ -28,7 +27,7 @@ if (ENVIRONMENT === ENV.DEVELOPMENT) {
 }
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'dist', 'index.html'));
 });
 
 app.listen(4000);

@@ -2,6 +2,11 @@ const ENVIRONMENT = process.env.NODE_ENV;
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WriteFilePlugin = require('write-file-webpack-plugin');
+const { ImageminWebpackPlugin } = require('imagemin-webpack');
+const imageminPngQuant = require('imagemin-pngquant');
+const imageminSvgo = require('imagemin-svgo');
 const { ENV } = require('./constants');
 
 const postCSSLoader = {
@@ -47,7 +52,11 @@ const config = {
       }
     }),
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new WriteFilePlugin(), // using this because express.static was not getting the files in memory
+    new CopyWebpackPlugin([
+      { from: 'public/src/images/favicon.ico', to: 'images/favicon.ico' }
+    ])
   ],
 
   resolve: {
@@ -83,7 +92,23 @@ const config = {
       },
       { test: /\.json$/, exclude: /node_modules/, loader: 'json' },
       {
-        test: /\.(png|jpg|gif|svg)$/, loader: 'file-loader?limit=100000', options: { name: 'images/[name].[ext]' }
+        test: /\.html$/,
+        use: [
+          'file-loader?name=[name].[ext]',
+          'extract-loader',
+          {
+            loader: 'html-loader',
+            options: {
+              minimize: true,
+              removeAttributeQuotes: false,
+              collapseWhitespace: true,
+              conservativeCollapse: false
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(png|svg)$/, loader: 'file-loader?limit=100000', options: { name: 'images/[name].[ext]' }
       }
     ]
   }
@@ -99,7 +124,7 @@ if (ENVIRONMENT === ENV.DEVELOPMENT) {
   * PRODUCTION!
   */
 
-  const options = {
+  const uglifyJsOptions = {
     sourceMap: true,
     comments: false,
     minimize: true,
@@ -108,8 +133,18 @@ if (ENVIRONMENT === ENV.DEVELOPMENT) {
     }
   };
 
-  // minify JS
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin(options));
+  const imageminOptions = {
+    plugins: [
+      imageminPngQuant(),
+      imageminSvgo()
+    ]
+  };
+
+  // minify JS, compress Images
+  config.plugins.push(
+    new webpack.optimize.UglifyJsPlugin(uglifyJsOptions),
+    new ImageminWebpackPlugin({ imageminOptions })
+  );
 }
 
 module.exports = config;

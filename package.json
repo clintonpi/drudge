@@ -28,11 +28,17 @@
     "babel-core": "6.26.0",
     "babel-loader": "7.1.2",
     "babel-preset-env": "1.7.0",
+    "copy-webpack-plugin": "4.5.2",
     "css-loader": "0.28.8",
     "eslint": "^5.0.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
+    "extract-loader": "3.0.0",
     "file-loader": "1.1.6",
+    "html-loader": "0.5.5",
+    "imagemin-pngquant": "6.0.0",
+    "imagemin-svgo": "7.0.0",
+    "imagemin-webpack": "3.0.0",
     "node-sass": "4.9.3",
     "postcss-loader": "2.0.10",
     "sass-loader": "6.0.6",
@@ -40,7 +46,8 @@
     "webpack": "3.10.0",
     "webpack-cli": "3.1.0",
     "webpack-dev-middleware": "2.0.4",
-    "webpack-hot-middleware": "2.21.0"
+    "webpack-hot-middleware": "2.21.0",
+    "write-file-webpack-plugin": "4.4.1"
   },
   "dependencies": {
     "express": "^4.16.3"
