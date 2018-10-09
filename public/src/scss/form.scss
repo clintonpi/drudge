@@ -1,0 +1,45 @@
+@import 'genvars';
+
+form {
+  margin: 20px auto;
+  display: flex;
+  justify-content: space-between;
+  transition: $transition;
+
+  * {
+    padding: 10px;
+    font-family: $font-family;
+    font-size: $font-size;
+    border-radius: 0;
+    border: 1px solid transparent;
+    box-shadow: $box-shadow;
+    outline: none;
+  }
+
+  ::placeholder {
+    color: $color1;
+    font-style: italic;
+    opacity: .5;
+  }
+
+  input[type="submit"] {
+    background-color: $color3;
+    color: $color2;
+    transition: $transition;
+
+    &:hover {
+      background-color: $color2;
+      color: $color3;
+      box-shadow: 0 10px 15px $shadow-color;
+      cursor: $cursor;
+    }
+  }
+}
+
+@media (max-width: 460px) {
+  form {
+    * {
+      font-size: $font-size;
+    }
+  }
+}
