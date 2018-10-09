@@ -24,6 +24,23 @@ const postCSSLoader = {
   }
 };
 
+const htmlLoader = (folder = false) => {
+  const fileLoader = folder === false ? 'file-loader?name=[name].[ext]' : 'file-loader?name=html/[name].[ext]';
+  return [
+    fileLoader,
+    'extract-loader',
+    {
+      loader: 'html-loader',
+      options: {
+        minimize: true,
+        removeAttributeQuotes: false,
+        collapseWhitespace: true,
+        conservativeCollapse: false
+      }
+    }
+  ];
+};
+
 const config = {
   devtool: 'source-map',
 
@@ -98,20 +115,13 @@ const config = {
       },
       { test: /\.json$/, exclude: /node_modules/, loader: 'json' },
       {
+        test: /index\.html/,
+        use: htmlLoader()
+      },
+      {
         test: /\.html$/,
-        use: [
-          'file-loader?name=[name].[ext]',
-          'extract-loader',
-          {
-            loader: 'html-loader',
-            options: {
-              minimize: true,
-              removeAttributeQuotes: false,
-              collapseWhitespace: true,
-              conservativeCollapse: false
-            }
-          }
-        ]
+        exclude: /index\.html/,
+        use: htmlLoader(true)
       },
       {
         test: /\.(png|svg)$/, loader: 'file-loader?limit=100000', options: { name: 'images/[name].[ext]' }
