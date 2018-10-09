@@ -3,6 +3,7 @@ const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const { ImageminWebpackPlugin } = require('imagemin-webpack');
 const imageminPngQuant = require('imagemin-pngquant');
@@ -56,7 +57,10 @@ const config = {
     new WriteFilePlugin(), // using this because express.static was not getting the files in memory
     new CopyWebpackPlugin([
       { from: 'public/src/images/favicon.ico', to: 'images/favicon.ico' }
-    ])
+    ]),
+    new ExtractTextPlugin({
+      filename: 'css/[name].css'
+    })
   ],
 
   resolve: {
@@ -71,21 +75,23 @@ const config = {
     rules: [
       {
         test: /\.scss$/,
-        use: [
-          { loader: 'style-loader' },
-          {
-            loader: 'css-loader',
-            options: { minimize: true, importLoaders: 1 }
-          },
-          postCSSLoader,
-          {
-            loader: 'sass-loader',
-            options: {
-              includePaths: [path.resolve(__dirname, './node_modules/compass-mixins/lib')],
-              sourceMap: true
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: { minimize: true, importLoaders: 1 }
+            },
+            postCSSLoader,
+            {
+              loader: 'sass-loader',
+              options: {
+                includePaths: [path.resolve(__dirname, './node_modules/compass-mixins/lib')],
+                sourceMap: true
+              }
             }
-          }
-        ]
+          ]
+        }),
       },
       {
         test: /\.js$/, exclude: /node_modules/, loader: ['babel-loader']

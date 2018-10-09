@@ -34,6 +34,7 @@
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
     "extract-loader": "3.0.0",
+    "extract-text-webpack-plugin": "3.0.2",
     "file-loader": "1.1.6",
     "html-loader": "0.5.5",
     "imagemin-pngquant": "6.0.0",
