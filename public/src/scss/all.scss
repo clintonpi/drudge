@@ -14,6 +14,34 @@ body {
   }
 }
 
+@keyframes zoom {
+  from {transform: scale(0);}
+  to {transform: scale(1);}
+}
+
+header {
+  div {
+    height: 15vh;
+    min-height: 70px;
+    background-image: url('/images/drudge-logo.svg');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: zoom .5s;
+  }
+
+  ul {
+    display: flex;
+    justify-content: flex-end;
+    margin: 10px;
+    font-size: 16px;
+
+    li {
+      margin: 0 10px;
+    }
+  }
+}
+
 h1 {
   text-align: center;
   font-size: 2rem;
