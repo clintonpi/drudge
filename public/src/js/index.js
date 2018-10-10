@@ -7,6 +7,7 @@ import '../html/signup.html';
 import '../scss/all.scss';
 import '../scss/form.scss';
 import '../scss/main.scss';
+import '../scss/account.scss';
 import '../images/drudge-logo.svg';
 
 const form = document.querySelector('#form');
