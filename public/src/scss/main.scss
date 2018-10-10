@@ -3,21 +3,6 @@
 $bxshdw: 0 7px 10px $shadow-color;
 $task-content-size: 30px;
 
-@keyframes zoom {
-  from {transform: scale(0);}
-  to {transform: scale(1);}
-}
-
-header {
-  height: 15vh;
-  background-image: url('/images/drudge-logo.svg');
-  background-position: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  margin-top: 20px;
-  animation: zoom .5s;
-}
-
 main {
   width: 700px;
   max-width: 95%;
@@ -147,7 +132,7 @@ main {
 
   * {
     font-size: 16px;
-    font-style: italic;
+    font-style: $font-style;
     padding: 5px;
   }
 
@@ -195,7 +180,7 @@ form {
 
   ::placeholder {
     color: $color1;
-    font-style: italic;
+    font-style: $font-style;
     opacity: .5;
   }
 
@@ -208,7 +193,7 @@ form {
 @media (max-width: 460px) {
   form {
     * {
-      font-size: $font-size;
+      font-size: $font-size-sm;
     }
 
     input[type="text"] {

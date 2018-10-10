@@ -45,15 +45,22 @@ header {
 h1 {
   text-align: center;
   font-size: 2rem;
-  font-style: italic;
+  font-style: $font-style;
   margin: 20px 0;
 }
 
-@media (max-width: 460px) {
-  $font-size: 18px;
+a {
+  color: $color3;
+  text-decoration: none;
 
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 460px) {
   body {
-    font-size: $font-size;
+    font-size: $font-size-sm;
   }
 
   h1 {

@@ -1,0 +1,29 @@
+@import 'genvars';
+
+#wrap {
+  form {
+    flex-direction: column;
+    
+    input {
+      width: 600px;
+      max-width: 95%;
+      margin: 10px auto;
+    }
+  }
+
+  p {
+    font-style: $font-style;
+    margin: 10px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 800px) {
+  #wrap {
+    form {
+      input {
+        margin: 5px auto;
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ form {
 
   ::placeholder {
     color: $color1;
-    font-style: italic;
+    font-style: $font-style;
     opacity: .5;
   }
 
@@ -39,7 +39,11 @@ form {
 @media (max-width: 460px) {
   form {
     * {
-      font-size: $font-size;
+      font-size: $font-size-sm;
+    }
+
+    ::placeholder {
+      font-size: $font-size-sm;
     }
   }
 }
