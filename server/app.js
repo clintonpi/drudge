@@ -27,15 +27,15 @@ if (ENVIRONMENT === ENV.DEVELOPMENT) {
 }
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'dist', 'index.html'));
+  res.status(200).sendFile(path.join(__dirname, '..', 'public', 'dist', 'index.html'));
 });
 
 app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'dist', 'html', 'signup.html'));
+  res.status(200).sendFile(path.join(__dirname, '..', 'public', 'dist', 'html', 'signup.html'));
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'dist', 'html', 'login.html'));
+  res.status(200).sendFile(path.join(__dirname, '..', 'public', 'dist', 'html', 'login.html'));
 });
 
 app.listen(4000);
