@@ -30,6 +30,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'dist', 'index.html'));
 });
 
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'dist', 'html', 'signup.html'));
+});
+
 app.listen(4000);
 
 module.exports = app;
