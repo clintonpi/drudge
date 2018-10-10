@@ -3,6 +3,7 @@ import {
 } from './tasks';
 import sanitizeStr from './utils';
 import '../index.html';
+import '../html/signup.html';
 import '../scss/all.scss';
 import '../scss/form.scss';
 import '../scss/main.scss';
