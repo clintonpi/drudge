@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Clinton Nkwocha">
+    <meta name="description" content="Drudge is a full-stack progressive web to-do app.">
+    <meta name="keywords" content="drudge, to-do, to-do app">
+    <meta name="language" content="English">
+    <meta name="theme-color" content="#f2f2f2">
+    <meta name="viewport" content="width=device-width">
+    <title>Log In - Drudge</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bundle.css">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="container">
+      <header>
+        <ul>
+          <li><a href="/">Home</a></li>
+        </ul>
+        <div></div>
+      </header>
+      <div id="wrap">
+        <h1>Log In</h1>
+        <form action="/login" method="POST">
+          <input type="email" name="email" placeholder="Email address" required>
+          <input type="password" name="password" placeholder="Password" minlength="8" maxlength="4000" required>
+          <input type="submit" value="Log In">
+        </form>
+        <p>Not yet registered? sign up <a href="/signup">here</a>!</p>
+      </div>
+    </div>
+  </body>
+</html>
