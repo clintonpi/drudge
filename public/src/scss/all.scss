@@ -23,11 +23,12 @@ header {
   div {
     height: 15vh;
     min-height: 70px;
-    background-image: url('/images/drudge-logo.svg');
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
+    text-align: center;
     animation: zoom .5s;
+
+    img {
+      height: 100%;
+    }
   }
 
   ul {
