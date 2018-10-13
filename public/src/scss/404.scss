@@ -1,0 +1,15 @@
+@import 'genvars';
+
+#fourofour {
+  h1 {
+    color: $color4;
+
+    &::selection, *::selection {
+      background-color: $color4;
+    }
+  }
+
+  span {
+    font-size: 10rem;
+  }
+}

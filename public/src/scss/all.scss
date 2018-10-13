@@ -59,6 +59,13 @@ a {
   }
 }
 
+p {
+  font-size: 1.2rem;
+  font-style: $font-style;
+  margin: 20px 10px;
+  text-align: center;
+}
+
 @media (max-width: 460px) {
   body {
     font-size: $font-size-sm;
@@ -66,5 +73,9 @@ a {
 
   h1 {
     font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
   }
 }
