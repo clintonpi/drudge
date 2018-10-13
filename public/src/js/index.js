@@ -10,6 +10,7 @@ import '../scss/all.scss';
 import '../scss/form.scss';
 import '../scss/main.scss';
 import '../scss/account.scss';
+import '../scss/404.scss';
 import '../images/drudge-logo.svg';
 import '../images/twitching-drudge.gif';
 
