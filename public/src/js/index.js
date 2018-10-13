@@ -5,6 +5,7 @@ import sanitizeStr from './utils';
 import '../index.html';
 import '../html/signup.html';
 import '../html/login.html';
+import '../html/404.html';
 import '../scss/all.scss';
 import '../scss/form.scss';
 import '../scss/main.scss';
