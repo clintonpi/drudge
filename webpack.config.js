@@ -8,6 +8,7 @@ const WriteFilePlugin = require('write-file-webpack-plugin');
 const { ImageminWebpackPlugin } = require('imagemin-webpack');
 const imageminPngQuant = require('imagemin-pngquant');
 const imageminSvgo = require('imagemin-svgo');
+const imageminGifsicle = require('imagemin-gifsicle');
 const { ENV } = require('./constants');
 
 const postCSSLoader = {
@@ -124,7 +125,7 @@ const config = {
         use: htmlLoader(true)
       },
       {
-        test: /\.(png|svg)$/, loader: 'file-loader?limit=100000', options: { name: 'images/[name].[ext]' }
+        test: /\.(png|svg|gif)$/, loader: 'file-loader?limit=100000', options: { name: 'images/[name].[ext]' }
       }
     ]
   }
@@ -151,6 +152,7 @@ if (ENVIRONMENT === ENV.DEVELOPMENT) {
 
   const imageminOptions = {
     plugins: [
+      imageminGifsicle({ optimizationLevel: 3 }),
       imageminPngQuant(),
       imageminSvgo()
     ]
