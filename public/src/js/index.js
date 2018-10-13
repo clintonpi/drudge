@@ -11,6 +11,7 @@ import '../scss/form.scss';
 import '../scss/main.scss';
 import '../scss/account.scss';
 import '../images/drudge-logo.svg';
+import '../images/twitching-drudge.gif';
 
 const form = document.querySelector('#form');
 
