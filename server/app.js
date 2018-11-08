@@ -1,15 +1,21 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const compiler = require('webpack');
 const path = require('path');
 const webpackDevMiddleWare = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('../webpack.config');
 const { ENV } = require('../constants');
+const userRouter = require('./users/userRoute');
 
 const app = express();
 const ENVIRONMENT = process.env.NODE_ENV || ENV.PRODUCTION;
 
 app.use(express.static(path.join(__dirname, '..', 'public', 'dist')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(userRouter);
 
 if (ENVIRONMENT === ENV.DEVELOPMENT) {
   // Attach webpack dev server to running app
@@ -28,10 +34,6 @@ if (ENVIRONMENT === ENV.DEVELOPMENT) {
 
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'dist', 'index.html'));
-});
-
-app.get('/signup', (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, '..', 'public', 'dist', 'html', 'signup.html'));
 });
 
 app.get('/login', (req, res) => {

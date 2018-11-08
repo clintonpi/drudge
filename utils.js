@@ -4,4 +4,4 @@ const sanitizeStr = (str) => {
   return cleanStr.trim();
 };
 
-export default sanitizeStr;
+module.exports = sanitizeStr;

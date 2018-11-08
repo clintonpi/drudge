@@ -1,7 +1,7 @@
 import {
   saveTask, fetchTasks, removeCompletedTasks, countTasks, addTaskToDOM
 } from './tasks';
-import sanitizeStr from './utils';
+import sanitizeStr from '../../../utils';
 import '../index.html';
 import '../html/signup.html';
 import '../html/login.html';

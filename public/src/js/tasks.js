@@ -1,5 +1,5 @@
 import { LOCAL_STORAGE_KEY } from '../../../constants';
-import sanitizeStr from './utils';
+import sanitizeStr from '../../../utils';
 
 const TASK_STATUS = {
   TODO: 'todo',
