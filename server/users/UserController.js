@@ -4,9 +4,11 @@ const jwt = require('jsonwebtoken');
 const pool = require('../db/index.js');
 const sanitizeStr = require('../../utils');
 
+const secretKey = process.env.SECRET_KEY;
+
 /**
  * @class UserController
- * @classdesc Implements user sign up
+ * @classdesc Implements user sign up and log in
  */
 class UserController {
   /**
@@ -34,11 +36,41 @@ class UserController {
           id: user.id,
           username: user.username,
           email: user.email
-        }, process.env.SECRET_KEY);
+        }, secretKey);
 
         return res.status(201).json({ token });
       })
       .catch(() => res.status(500).json({ message: 'There was an error while processing your registration.' }));
+  }
+
+  /**
+   * Logs in a user
+   *
+   * @static
+   * @param {object} req - The request object
+   * @param {object} res - The response object
+   * @return {object} token or message
+   * @memberof UserController
+   */
+  static loginUser(req, res) {
+    const { email } = req.body;
+
+    const text = 'SELECT id, username, email FROM users WHERE email = $1;';
+    const values = [email];
+
+    pool.query(text, values)
+      .then((result) => {
+        const user = result.rows[0];
+
+        const token = jwt.sign({
+          id: user.id,
+          username: user.username,
+          email: user.email
+        }, secretKey);
+
+        return res.status(201).json({ token });
+      })
+      .catch(() => res.status(500).json({ message: 'There was an error while logging you in.' }));
   }
 }
 

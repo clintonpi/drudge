@@ -36,10 +36,6 @@ app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', 'public', 'dist', 'index.html'));
 });
 
-app.get('/login', (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, '..', 'public', 'dist', 'html', 'login.html'));
-});
-
 app.get('*', (req, res) => {
   res.status(404).sendFile(path.join(__dirname, '..', 'public', 'dist', 'html', '404.html'));
 });
