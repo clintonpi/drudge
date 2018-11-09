@@ -1,15 +1,19 @@
 const isEmail = require('validator/lib/isEmail');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const path = require('path');
 const pool = require('../db/index');
 const sanitizeStr = require('../../utils');
 
+const secretKey = process.env.SECRET_KEY;
+
 /**
  * @class UserValidator
- * @classdesc Implements validation of user signup and login
+ * @classdesc Implements validation of user data, login and profile update
  */
 class UserValidator {
   /**
-   * Validate user signup
+   * Validate user data
    *
    * @static
    * @param {object} req - The request object
@@ -18,7 +22,7 @@ class UserValidator {
    * @return {object} message
    * @memberof UserValidator
    */
-  static validateSignup(req, res, next) {
+  static validateUserData(req, res, next) {
     const {
       username, email, password, password2
     } = req.body;
@@ -73,7 +77,7 @@ class UserValidator {
         }
         return next();
       })
-      .catch(() => res.status(500).json({ message: 'There was an error while processing your registration.' }));
+      .catch(() => res.status(500).json({ message: 'There was an error while processing your request.' }));
   }
 
   /**
@@ -100,6 +104,39 @@ class UserValidator {
         return next();
       })
       .catch(() => res.status(500).json({ message: 'There was an error while logging you in.' }));
+  }
+
+  /**
+   * Validate user profile
+   *
+   * @static
+   * @param {object} req - The request object
+   * @param {object} res - The response object
+   * @param {function} next - The next middleware
+   * @return {object} message
+   * @memberof UserValidator
+   */
+  static validateProfile(req, res, next) {
+    const { oldPassword } = req.body;
+    const { token } = req.headers;
+
+    if (!oldPassword) return res.status(400).json({ message: 'Your request was incomplete.' });
+    if (!token) return res.status(403).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
+
+    jwt.verify(token, secretKey, (err, oldUser) => {
+      if (err) return res.status(403).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
+
+      const text = 'SELECT password FROM users WHERE id = $1;';
+      const values = [oldUser.id];
+
+      pool.query(text, values)
+        .then((result) => {
+          if (result.rows.length === 0) return res.status(400).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
+          if (!bcrypt.compareSync(oldPassword, result.rows[0].password)) return res.status(400).json({ message: 'Your password was incorrect.' });
+          return next();
+        })
+        .catch(() => res.status(500).json({ message: 'There was an error while updating your profile.' }));
+    });
   }
 }
 
