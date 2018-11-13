@@ -9,7 +9,7 @@ const secretKey = process.env.SECRET_KEY;
 
 /**
  * @class UserController
- * @classdesc Implements user sign up, log in and profile update
+ * @classdesc Implements user sign up, log in, profile update and delete
  */
 class UserController {
   /**
@@ -105,6 +105,29 @@ class UserController {
           return res.status(201).json({ token });
         })
         .catch(() => res.status(500).json({ message: 'There was an error while updating your profile.' }));
+    });
+  }
+
+  /**
+   * Deletes a user
+   *
+   * @static
+   * @param {object} req - The request object
+   * @param {object} res - The response object
+   * @return {object} token or message
+   * @memberof UserController
+   */
+  static deleteUser(req, res) {
+    const { token } = req.headers;
+    jwt.verify(token, secretKey, (err, user) => {
+      if (err) return res.status(403).json({ message: 'Your request was forbidden.' });
+
+      const text = 'DELETE FROM users WHERE id = $1;';
+      const values = [user.id];
+
+      pool.query(text, values)
+        .then(() => res.status(200).json({ message: 'Your profile has been successfully deleted.' }))
+        .catch(() => res.status(500).json({ message: 'There was an error while deleting your profile.' }));
     });
   }
 }

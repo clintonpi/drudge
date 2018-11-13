@@ -9,7 +9,7 @@ const secretKey = process.env.SECRET_KEY;
 
 /**
  * @class UserValidator
- * @classdesc Implements validation of user data, login and profile update
+ * @classdesc Implements validation of user data, login and profile update and delete
  */
 class UserValidator {
   /**
@@ -117,25 +117,35 @@ class UserValidator {
    * @memberof UserValidator
    */
   static validateProfile(req, res, next) {
-    const { oldPassword } = req.body;
+    let passkey;
+
+    switch (req.method) {
+      case 'DELETE':
+        passkey = req.body.password;
+        break;
+      default:
+        passkey = req.body.oldPassword;
+        break;
+    }
+
     const { token } = req.headers;
 
-    if (!oldPassword) return res.status(400).json({ message: 'Your request was incomplete.' });
+    if (!passkey) return res.status(400).json({ message: 'Your request was incomplete.' });
     if (!token) return res.status(403).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
 
-    jwt.verify(token, secretKey, (err, oldUser) => {
+    jwt.verify(token, secretKey, (err, user) => {
       if (err) return res.status(403).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
 
       const text = 'SELECT password FROM users WHERE id = $1;';
-      const values = [oldUser.id];
+      const values = [user.id];
 
       pool.query(text, values)
         .then((result) => {
           if (result.rows.length === 0) return res.status(400).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
-          if (!bcrypt.compareSync(oldPassword, result.rows[0].password)) return res.status(400).json({ message: 'Your password was incorrect.' });
+          if (!bcrypt.compareSync(passkey, result.rows[0].password)) return res.status(400).json({ message: 'Your password was incorrect.' });
           return next();
         })
-        .catch(() => res.status(500).json({ message: 'There was an error while updating your profile.' }));
+        .catch(() => res.status(500).json({ message: 'There was an error while processing your request.' }));
     });
   }
 }

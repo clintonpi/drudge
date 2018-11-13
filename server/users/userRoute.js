@@ -3,7 +3,10 @@ const path = require('path');
 const UserController = require('./UserController');
 const UserValidator = require('./UserValidator');
 
-const { signupUser, loginUser, updateUser } = UserController;
+const {
+  signupUser, loginUser, updateUser, deleteUser
+} = UserController;
+
 const { validateUserData, validateLogin, validateProfile } = UserValidator;
 
 const userRouter = express.Router();
@@ -24,6 +27,7 @@ userRouter.route('/profile')
   .get((req, res) => {
     res.status(200).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'profile.html'));
   })
-  .put(validateProfile, validateUserData, updateUser);
+  .put(validateProfile, validateUserData, updateUser)
+  .delete(validateProfile, deleteUser);
 
 module.exports = userRouter;
