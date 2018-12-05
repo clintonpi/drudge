@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 const pool = require('../db/index.js');
 const sanitizeStr = require('../../utils');
 
@@ -87,7 +86,7 @@ class UserController {
     const { username, email, password } = req.body;
     let { token } = req.headers;
     jwt.verify(token, secretKey, (err, oldUser) => {
-      if (err) return res.status(403).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
+      if (err) return res.redirect('/login');
 
       const text = 'UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4 RETURNING *;';
       const values = [username, email, bcrypt.hashSync(password, 10), oldUser.id];
@@ -120,7 +119,7 @@ class UserController {
   static deleteUser(req, res) {
     const { token } = req.headers;
     jwt.verify(token, secretKey, (err, user) => {
-      if (err) return res.status(403).json({ message: 'Your request was forbidden.' });
+      if (err) return res.redirect('/login');
 
       const text = 'DELETE FROM users WHERE id = $1;';
       const values = [user.id];

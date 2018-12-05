@@ -1,7 +1,6 @@
 const isEmail = require('validator/lib/isEmail');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 const pool = require('../db/index');
 const sanitizeStr = require('../../utils');
 
@@ -131,17 +130,17 @@ class UserValidator {
     const { token } = req.headers;
 
     if (!passkey) return res.status(400).json({ message: 'Your request was incomplete.' });
-    if (!token) return res.status(403).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
+    if (!token) return res.redirect('/login');
 
     jwt.verify(token, secretKey, (err, user) => {
-      if (err) return res.status(403).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
+      if (err) return res.redirect('/login');
 
       const text = 'SELECT password FROM users WHERE id = $1;';
       const values = [user.id];
 
       pool.query(text, values)
         .then((result) => {
-          if (result.rows.length === 0) return res.status(400).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'login.html'));
+          if (result.rows.length === 0) return res.redirect('/login');
           if (!bcrypt.compareSync(passkey, result.rows[0].password)) return res.status(400).json({ message: 'Your password was incorrect.' });
           return next();
         })
