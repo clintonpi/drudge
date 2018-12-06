@@ -17,7 +17,7 @@ class UserController {
    * @static
    * @param {object} req - The request object
    * @param {object} res - The response object
-   * @return {object} token or message
+   * @return {object} token and user or message
    * @memberof UserController
    */
   static signupUser(req, res) {
@@ -38,7 +38,13 @@ class UserController {
           email: user.email
         }, secretKey);
 
-        return res.status(201).json({ token });
+        return res.status(201).json({
+          token,
+          user: {
+            username: user.username,
+            email: user.email
+          }
+        });
       })
       .catch(() => res.status(500).json({ message: 'There was an error while processing your registration.' }));
   }
@@ -49,7 +55,7 @@ class UserController {
    * @static
    * @param {object} req - The request object
    * @param {object} res - The response object
-   * @return {object} token or message
+   * @return {object} token and user or message
    * @memberof UserController
    */
   static loginUser(req, res) {
@@ -68,7 +74,13 @@ class UserController {
           email: user.email
         }, secretKey);
 
-        return res.status(200).json({ token });
+        return res.status(200).json({
+          token,
+          user: {
+            username: user.username,
+            email: user.email
+          }
+        });
       })
       .catch(() => res.status(500).json({ message: 'There was an error while logging you in.' }));
   }
@@ -79,7 +91,7 @@ class UserController {
    * @static
    * @param {object} req - The request object
    * @param {object} res - The response object
-   * @return {object} token or message
+   * @return {object} token and user or message
    * @memberof UserController
    */
   static updateUser(req, res) {
@@ -101,7 +113,13 @@ class UserController {
             email: user.email
           }, secretKey);
 
-          return res.status(201).json({ token });
+          return res.status(201).json({
+            token,
+            user: {
+              username: user.username,
+              email: user.email
+            }
+          });
         })
         .catch(() => res.status(500).json({ message: 'There was an error while updating your profile.' }));
     });
@@ -113,7 +131,7 @@ class UserController {
    * @static
    * @param {object} req - The request object
    * @param {object} res - The response object
-   * @return {object} token or message
+   * @return {object} message
    * @memberof UserController
    */
   static deleteUser(req, res) {
