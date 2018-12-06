@@ -127,10 +127,15 @@ class UserValidator {
         break;
     }
 
-    const { token } = req.headers;
-
     if (!passkey) return res.status(400).json({ message: 'Your request was incomplete.' });
+
+    const { authorization } = req.headers; // headers are case-insensitve
+    if (!authorization) return res.redirect('/login');
+
+    // Header authorization will be sent as Authorization: Bearer <token>
+    const token = authorization.split(' ')[1];
     if (!token) return res.redirect('/login');
+    req.token = token;
 
     jwt.verify(token, secretKey, (err, user) => {
       if (err) return res.redirect('/login');

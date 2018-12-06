@@ -96,7 +96,7 @@ class UserController {
    */
   static updateUser(req, res) {
     const { username, email, password } = req.body;
-    let { token } = req.headers;
+    let { token } = req;
     jwt.verify(token, secretKey, (err, oldUser) => {
       if (err) return res.redirect('/login');
 
@@ -135,7 +135,7 @@ class UserController {
    * @memberof UserController
    */
   static deleteUser(req, res) {
-    const { token } = req.headers;
+    const { token } = req;
     jwt.verify(token, secretKey, (err, user) => {
       if (err) return res.redirect('/login');
 
