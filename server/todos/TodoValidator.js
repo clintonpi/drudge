@@ -38,7 +38,7 @@ class TodoValidator {
           req.userId = user.id;
           return next();
         })
-        .catch(() => res.status(500).json({ message: 'There was an error while creating your todo.' }));
+        .catch(() => res.status(500).json({ message: 'There was an error while processing your request.' }));
     });
   }
 
