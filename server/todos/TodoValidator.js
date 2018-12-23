@@ -19,7 +19,7 @@ class TodoValidator {
    * @return {object} message
    * @memberof TodoValidator
    */
-  static validateUserAuthrization(req, res, next) {
+  static validateUserAuthorization(req, res, next) {
     const { authorization } = req.headers;
     if (!authorization) return res.redirect('/login');
 
