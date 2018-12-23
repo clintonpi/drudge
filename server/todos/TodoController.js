@@ -13,18 +13,18 @@ class TodoController {
    * @param {object} req - The request object
    * @param {object} res - The response object
    * @param {function} next - The next middleware
-   * @return {object} status code or message
+   * @return {object} todo id or message
    * @memberof TodoController
    */
   static createTodo(req, res) {
     const { userId } = req;
     const { todoName } = req.body;
 
-    const text = 'INSERT INTO todos(id, user_id, name) VALUES($1, $2, $3);';
+    const text = 'INSERT INTO todos(id, user_id, name) VALUES($1, $2, $3) RETURNING *;';
     const values = [uuidv1(), userId, todoName];
 
     pool.query(text, values)
-      .then(() => res.sendStatus(201))
+      .then(result => res.status(201).json({ todoId: result.rows[0].id }))
       .catch(() => res.status(500).json({ message: 'There was an error while creating your todo.' }));
   }
 }
