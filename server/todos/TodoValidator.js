@@ -62,7 +62,42 @@ class TodoValidator {
     const sanitizedTodo = sanitizeStr(todoName);
     if (sanitizedTodo.length < 1) return res.status(400).json({ message: 'Your todo was invalid.' });
 
+    req.sanitizedTodo = sanitizedTodo;
     return next();
+  }
+
+  /**
+   * Validate todo data
+   *
+   * @static
+   * @param {object} req - The request object
+   * @param {object} res - The response object
+   * @param {function} next - The next middleware
+   * @return {object} message
+   * @memberof TodoValidator
+   */
+  static validateTodoData(req, res, next) {
+    const { todoId, isDone } = req.body;
+    const { userId } = req;
+
+    if (!todoId || (!isDone && isDone !== false)) return res.status(400).json({ message: 'Your request was incomplete.' });
+
+    if (typeof isDone !== 'boolean') return res.status(400).json({ message: 'Your todo status was invalid.' });
+
+    const text = 'SELECT id, user_id, name, done FROM todos WHERE id = $1;';
+    const values = [todoId];
+
+    pool.query(text, values)
+      .then((result) => {
+        const resultRows = result.rows;
+
+        if (resultRows.length === 0) return res.status(400).json({ message: 'This todo does not exist.' });
+
+        if (resultRows[0].user_id !== userId) return res.status(400).json({ message: 'You are not the owner of this todo.' });
+
+        return next();
+      })
+      .catch(() => res.status(500).json({ message: 'There was an error while processing your request.' }));
   }
 }
 

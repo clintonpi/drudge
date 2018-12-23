@@ -3,7 +3,7 @@ const pool = require('../db/index');
 
 /**
  * @class TodoController
- * @classdesc Implements creation and getting of todo
+ * @classdesc Implements creation, getting and updating of todos
  */
 class TodoController {
   /**
@@ -51,6 +51,28 @@ class TodoController {
         return res.status(200).json({ todos: result.rows });
       })
       .catch(() => res.status(500).json({ message: 'There was an error while getting your todos.' }));
+  }
+
+  /**
+   * Update todo
+   *
+   * @static
+   * @param {object} req - The request object
+   * @param {object} res - The response object
+   * @param {function} next - The next middleware
+   * @return {object} status code or message
+   * @memberof TodoController
+   */
+  static updateTodo(req, res) {
+    const { todoId, isDone } = req.body;
+    const { sanitizedTodo } = req;
+
+    const text = 'UPDATE todos SET name = $1, done = $2 WHERE id = $3;';
+    const values = [sanitizedTodo, isDone, todoId];
+
+    pool.query(text, values)
+      .then(() => res.sendStatus(200))
+      .catch(() => res.status(500).json({ message: 'There was an error while updating your todo.' }));
   }
 }
 
