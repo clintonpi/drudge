@@ -3,7 +3,7 @@ const pool = require('../db/index');
 
 /**
  * @class TodoController
- * @classdesc Implements creation, getting and updating of todos
+ * @classdesc Implements creation, getting, updating and deleting of todos
  */
 class TodoController {
   /**
@@ -73,6 +73,28 @@ class TodoController {
     pool.query(text, values)
       .then(() => res.sendStatus(200))
       .catch(() => res.status(500).json({ message: 'There was an error while updating your todo.' }));
+  }
+
+  /**
+   * Delete todo
+   *
+   * @static
+   * @param {object} req - The request object
+   * @param {object} res - The response object
+   * @param {function} next - The next middleware
+   * @return {object} status code or message
+   * @memberof TodoController
+   */
+  static deleteTodo(req, res) {
+    const { todosId } = req.body;
+    const { parameters } = req;
+
+    const text = `DELETE FROM todos WHERE id IN (${parameters});`;
+    const values = todosId;
+
+    pool.query(text, values)
+      .then(() => res.sendStatus(200))
+      .catch(() => res.status(500).json({ message: 'There was an error while deleting your todo(s).' }));
   }
 }
 

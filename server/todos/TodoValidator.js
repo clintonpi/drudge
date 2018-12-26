@@ -6,7 +6,7 @@ const secretKey = process.env.SECRET_KEY;
 
 /**
  * @class TodoValidator
- * @classdesc Implements validation of user authorization and todo data
+ * @classdesc Implements validation of user authorization, todo data and todos to be deleted
  */
 class TodoValidator {
   /**
@@ -98,6 +98,67 @@ class TodoValidator {
         return next();
       })
       .catch(() => res.status(500).json({ message: 'There was an error while processing your request.' }));
+  }
+
+  /**
+   * Validate todos to be deleted
+   *
+   * @static
+   * @param {object} req - The request object
+   * @param {object} res - The response object
+   * @param {function} next - The next middleware
+   * @return {object} message
+   * @memberof TodoValidator
+   */
+  static validateTodosToBeDeleted(req, res, next) {
+    const { todosId } = req.body;
+    const { userId } = req;
+
+    if (!todosId) return res.status(400).json({ message: 'Your request was incomplete.' });
+
+    if (!Array.isArray(todosId)) return res.status(400).json({ message: 'Your request was invalid.' });
+
+    const todosIdLength = todosId.length;
+    if (todosIdLength === 0) return res.status(400).json({ message: 'Your request was invalid.' });
+
+    const generateParameters = (length) => {
+      const parameters = [];
+      for (let i = 1; i <= length; i += 1) {
+        parameters.push(`$${i}`);
+      }
+      return parameters;
+    };
+
+    const parameters = generateParameters(todosIdLength);
+
+    const text = `SELECT id, user_id FROM todos WHERE id IN (${parameters});`;
+    const values = todosId;
+
+    pool.query(text, values)
+      .then((result) => {
+        const resultRows = result.rows;
+        const resultRowsLength = resultRows.length;
+
+        if (resultRowsLength === 0 || resultRowsLength < todosIdLength) {
+          if (todosIdLength === 1) {
+            return res.status(400).json({ message: 'This todo does not exist.' });
+          }
+          return res.status(400).json({ message: 'Some of these todos do not exist.' });
+        }
+
+        const invalidTodos = resultRows.filter(row => row.user_id !== userId);
+
+        if (invalidTodos.length > 0) {
+          if (todosIdLength === 1) {
+            return res.status(400).json({ message: 'You are not the owner of this todo.' });
+          }
+          return res.status(400).json({ message: 'You are not the owner of some of these todos.' });
+        }
+
+        req.parameters = parameters;
+        return next();
+      })
+      .catch(() => res.status(500).json({ message: 'There was an error while deleting your todo(s).' }));
   }
 }
 
