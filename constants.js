@@ -1,7 +1,8 @@
 module.exports = {
   ENV: {
     PRODUCTION: 'PRODUCTION',
-    DEVELOPMENT: 'DEVELOPMENT'
+    DEVELOPMENT: 'DEVELOPMENT',
+    TEST: 'TEST'
   },
   LOCAL_STORAGE_KEY: 'TASK-LIST'
 };

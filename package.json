@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf public/dist && NODE_ENV=PRODUCTION webpack --config webpack.config.js --progress --colors",
     "dev": "node ./server/db/createTables.js && rm -rf public/dist  && NODE_ENV=DEVELOPMENT nodemon ./server/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=TEST nyc --reporter=text --reporter=html mocha './server/**/*.spec.js' --exit"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,8 @@
     "babel-core": "6.26.0",
     "babel-loader": "7.1.2",
     "babel-preset-env": "1.7.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
     "copy-webpack-plugin": "4.5.2",
     "css-loader": "0.28.8",
     "eslint": "^5.0.1",
@@ -41,7 +43,9 @@
     "imagemin-pngquant": "6.0.0",
     "imagemin-svgo": "7.0.0",
     "imagemin-webpack": "3.0.0",
+    "mocha": "^5.2.0",
     "node-sass": "4.9.3",
+    "nyc": "^13.1.0",
     "postcss-loader": "2.0.10",
     "sass-loader": "6.0.6",
     "style-loader": "0.19.1",

@@ -1,9 +1,24 @@
 const { Client } = require('pg');
 const dotenv = require('dotenv');
+const { ENV } = require('../../constants');
+
+const ENVIRONMENT = process.env.NODE_ENV;
 
 dotenv.config();
 
-const client = new Client(process.env.DEV_DB_URI);
+let connectionString;
+
+switch (ENVIRONMENT) {
+  case ENV.TEST:
+    connectionString = process.env.TEST_DB_URI;
+    break;
+  default:
+    connectionString = process.env.DEV_DB_URI;
+    break;
+}
+
+
+const client = new Client(connectionString);
 
 const createTables = `
   DROP TABLE IF EXISTS users CASCADE;

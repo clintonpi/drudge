@@ -1,0 +1,9 @@
+{
+  "exclude": [
+    "server/**/*.spec.js"
+  ],
+  "include": [
+    "server/todos",
+    "server/users"
+  ]
+}
