@@ -276,4 +276,92 @@ describe('User Actions', () => {
     });
     */
   });
+
+  describe('User Login', () => {
+    let user;
+
+    beforeEach(() => {
+      user = {
+        email: 'human@being.com',
+        password: 'humanbeing'
+      };
+    });
+
+    it('should return a login page', (done) => {
+      chai.request(app)
+        .get('/login')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(res.type).to.have.be.eq('text/html');
+          done();
+        });
+    });
+
+    it('should fail to login if "email" is not sent', (done) => {
+      user.email = undefined;
+      chai.request(app)
+        .post('/login')
+        .send(user)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.have.be.eq('Your request was incomplete');
+          done();
+        });
+    });
+
+    it('should fail to login if "password" is not sent', (done) => {
+      user.password = undefined;
+      chai.request(app)
+        .post('/login')
+        .send(user)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.have.be.eq('Your request was incomplete');
+          done();
+        });
+    });
+
+    it('should fail to login if the user does not exist', (done) => {
+      user.email = 'animal@being.com';
+      chai.request(app)
+        .post('/login')
+        .send(user)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.have.be.eq('This user does not exist.');
+          done();
+        });
+    });
+
+    it('should fail to login if the password given was incorrect', (done) => {
+      user.password = 'wrongPassword';
+      chai.request(app)
+        .post('/login')
+        .send(user)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.have.be.eq('Your password was incorrect.');
+          done();
+        });
+    });
+
+    it('should login the user', (done) => {
+      chai.request(app)
+        .post('/login')
+        .send(user)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(res.body).to.have.property('token');
+          expect(res.body.user).to.have.property('username');
+          expect(res.body.user).to.have.property('email');
+          done();
+        });
+    });
+  });
 });
