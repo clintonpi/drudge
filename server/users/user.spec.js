@@ -65,7 +65,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your request was incomplete.');
+          expect(res.body.message).to.be.eq('Your request was incomplete.');
           done();
         });
     });
@@ -78,7 +78,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your request was incomplete.');
+          expect(res.body.message).to.be.eq('Your request was incomplete.');
           done();
         });
     });
@@ -91,7 +91,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your request was incomplete.');
+          expect(res.body.message).to.be.eq('Your request was incomplete.');
           done();
         });
     });
@@ -104,7 +104,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your request was incomplete.');
+          expect(res.body.message).to.be.eq('Your request was incomplete.');
           done();
         });
     });
@@ -118,7 +118,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your username was invalid.');
+          expect(res.body.message).to.be.eq('Your username was invalid.');
           done();
         });
     });
@@ -131,7 +131,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your username was invalid.');
+          expect(res.body.message).to.be.eq('Your username was invalid.');
           done();
         });
     });
@@ -144,7 +144,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your username was invalid.');
+          expect(res.body.message).to.be.eq('Your username was invalid.');
           done();
         });
     });
@@ -157,7 +157,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your email address was invalid.');
+          expect(res.body.message).to.be.eq('Your email address was invalid.');
           done();
         });
     });
@@ -170,7 +170,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('The password you chose to use was invalid.');
+          expect(res.body.message).to.be.eq('The password you chose to use was invalid.');
           done();
         });
     });
@@ -183,7 +183,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('The password you chose to use was invalid.');
+          expect(res.body.message).to.be.eq('The password you chose to use was invalid.');
           done();
         });
     });
@@ -197,7 +197,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('The password you chose to use was invalid.');
+          expect(res.body.message).to.be.eq('The password you chose to use was invalid.');
           done();
         });
     });
@@ -209,7 +209,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Users/a user with this username or/and email address already exists.');
+          expect(res.body.message).to.be.eq('Users/a user with this username or/and email address already exists.');
           done();
         });
     });
@@ -222,7 +222,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('A user with this username already exists.');
+          expect(res.body.message).to.be.eq('A user with this username already exists.');
           done();
         });
     });
@@ -235,7 +235,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('A user with this email address already exists.');
+          expect(res.body.message).to.be.eq('A user with this email address already exists.');
           done();
         });
     });
@@ -255,7 +255,7 @@ describe('User Actions', () => {
             .end((err, res) => {
               expect(err).to.be.null;
               expect(res).to.have.status(500);
-              expect(res.body.message).to.have.be.eq('There was an error while
+              expect(res.body.message).to.be.eq('There was an error while
               processing your request.');
             });
         })
@@ -293,7 +293,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-          expect(res.type).to.have.be.eq('text/html');
+          expect(res.type).to.be.eq('text/html');
           done();
         });
     });
@@ -306,7 +306,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your request was incomplete');
+          expect(res.body.message).to.be.eq('Your request was incomplete');
           done();
         });
     });
@@ -319,7 +319,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your request was incomplete');
+          expect(res.body.message).to.be.eq('Your request was incomplete');
           done();
         });
     });
@@ -332,7 +332,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('This user does not exist.');
+          expect(res.body.message).to.be.eq('This user does not exist.');
           done();
         });
     });
@@ -345,7 +345,7 @@ describe('User Actions', () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(400);
-          expect(res.body.message).to.have.be.eq('Your password was incorrect.');
+          expect(res.body.message).to.be.eq('Your password was incorrect.');
           done();
         });
     });
