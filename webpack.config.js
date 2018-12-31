@@ -51,7 +51,8 @@ const config = {
   },
 
   entry: {
-    bundle: [`${__dirname}/public/src/js/index.js`]
+    bundle: [`${__dirname}/public/src/js/index.js`],
+    modal: [`${__dirname}/public/src/js/modal.js`]
   },
 
   target: 'web',
@@ -135,6 +136,8 @@ if (ENVIRONMENT === ENV.DEVELOPMENT) {
   // add modules for hot reloading
   config.entry.bundle.unshift('webpack-hot-middleware/client');
   config.entry.bundle.unshift('webpack/hot/dev-server');
+  config.entry.modal.unshift('webpack-hot-middleware/client');
+  config.entry.modal.unshift('webpack/hot/dev-server');
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
 } else {
   /**
