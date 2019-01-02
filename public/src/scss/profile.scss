@@ -1,0 +1,103 @@
+@import 'genvars';
+
+.details-wrap {
+  display: flex;
+  flex-direction: column;
+  
+  .detail {
+    background-color: $color2;
+    text-align: left;
+    margin: 20px auto;
+  
+    span {
+      font-style: $font-style;
+      margin-right: 10px;
+    }
+  }
+}
+
+.delete {
+  background-color: $color4;
+
+  &::selection {
+    background-color: $color4;
+  }
+
+  &:hover {
+    background-color: $color2;
+    color: $color4;
+  }
+}
+
+.overlay {
+  background-color: rgba($color: #000000, $alpha: .5);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: $transition;
+}
+
+#modal-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  padding: 30px 0;
+  min-height: 100vh;
+  min-width: 100vw;
+  transition: $transition;
+}
+
+.block {
+  display: block;
+}
+
+.none {
+  display: none;
+}
+
+.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.modal {
+  width: 95vw;
+  max-width: 600px;
+  background-color: $color1;
+  margin: auto;
+  position: relative;
+  animation: zoom .3s;
+
+  input[type="checkbox"] {
+    margin: 0 20px;
+    padding: 0;
+  }
+
+  label {
+    color: $color2;
+    padding: 0;
+    margin: 0;
+    font-size: $font-size-sm;
+  }
+
+  p {
+    margin: 20px 40px;
+    color: $color2;
+  }
+}
+
+#change-password-toggle-wrap {
+  text-align: left;
+}
+
+#change-password-toggle-wrap, #change-password-toggle-wrap * {
+  box-shadow: none;
+}
