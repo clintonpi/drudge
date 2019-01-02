@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rm -rf public/dist && NODE_ENV=PRODUCTION webpack --config webpack.config.js --progress --colors",
     "dev": "node ./server/db/createTables.js && rm -rf public/dist  && NODE_ENV=DEVELOPMENT nodemon ./server/app.js",
-    "test": "NODE_ENV=TEST nyc --reporter=text --reporter=html mocha './server/**/*.spec.js' --exit"
+    "test": "NODE_ENV=TEST nyc --reporter=text --reporter=html mocha './server/**/*.spec.js' --exit",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
     "copy-webpack-plugin": "4.5.2",
+    "coveralls": "^3.0.2",
     "css-loader": "0.28.8",
     "eslint": "^5.0.1",
     "eslint-config-airbnb-base": "^13.0.0",

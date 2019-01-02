@@ -1,0 +1,5 @@
+exclude_paths:
+- public/dist
+- server/db/
+- server/**/*.spec.js
+- node_modules/
