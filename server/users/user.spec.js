@@ -364,4 +364,132 @@ describe('User Actions', () => {
         });
     });
   });
+
+  describe('User Profile', () => {
+    let oldPassword;
+
+    it('should return a profile page', (done) => {
+      chai.request(app)
+        .get('/profile')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(res.type).to.be.eq('text/html');
+          done();
+        });
+    });
+
+    it('should fail to update user profile if "passkey" is not sent', (done) => {
+      chai.request(app)
+        .put('/profile')
+        .send({ oldPassword })
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.be.eq('Your request was incomplete.');
+          done();
+        });
+    });
+
+    it('should fail to update user profile if "authorization" is not set in the req header', (done) => {
+      oldPassword = 'humanbeing';
+      chai.request(app)
+        .put('/profile')
+        .send({ oldPassword })
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.redirect;
+          expect(res.req.path).to.be.eq('/login');
+          done();
+        });
+    });
+
+    it('should fail to update user profile if "authorization" in the req header is invalid', (done) => {
+      oldPassword = 'humanbeing';
+      chai.request(app)
+        .put('/profile')
+        .send({ oldPassword })
+        .set('authorization', 'Bearer')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.redirect;
+          expect(res.req.path).to.be.eq('/login');
+          done();
+        });
+    });
+
+    it('should fail to update uer profile if the authorization token is invalid', (done) => {
+      oldPassword = 'humanbeing';
+      chai.request(app)
+        .put('/profile')
+        .send({ oldPassword })
+        .set('authorization', 'Bearer invalidToken')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.redirect;
+          expect(res.req.path).to.be.eq('/login');
+          done();
+        });
+    });
+
+    it('should fail to update user profile if the user id generated from the authorization token does not exist', (done) => {
+      oldPassword = 'humanbeing';
+      chai.request(app)
+        .put('/profile')
+        .send({ oldPassword })
+        .set('authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjZmJjYjIwLTA4ZTEtMTFlOS05MWZlLTlmMzg0M2Q5NDdmZCIsInVzZXJuYW1lIjoiY2xpbnRvbmFtZSIsImVtYWlsIjoibmt3b2NoYWNsaW50b25AZ21haWwuY29tYW1lIiwiaWF0IjoxNTQ1ODA5OTYzfQ.PhMNI57KYploKDfLqdx0Coije0mNaNq_5eBb7AVQkyI')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.redirect;
+          expect(res.req.path).to.be.eq('/login');
+          done();
+        });
+    });
+
+    it('should fail to update user profile if the password given was incorrect', (done) => {
+      oldPassword = 'password';
+      chai.request(app)
+        .post('/login')
+        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .end((err, res) => {
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('Your password was incorrect.');
+              done();
+            });
+        });
+    });
+
+    it('should update user profile', (done) => {
+      oldPassword = 'humanbeing';
+      const userUpdate = {
+        username: 'animal',
+        email: 'animal@being.com',
+        password: 'animalbeing',
+        password2: 'animalbeing'
+      };
+      chai.request(app)
+        .post('/login')
+        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .end((err, res) => {
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ ...userUpdate, oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(201);
+              expect(res.body).to.have.property('token');
+              expect(res.body.user.username).to.be.eq(sanitizeStr(userUpdate.username));
+              expect(isEmail(res.body.user.email)).to.be.true;
+              done();
+            });
+        });
+    });
+  });
 });
