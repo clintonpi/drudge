@@ -491,5 +491,113 @@ describe('User Actions', () => {
             });
         });
     });
+
+    // profile delete
+    let password;
+
+    it('should fail to delete user profile if "passkey" is not sent', (done) => {
+      chai.request(app)
+        .delete('/profile')
+        .send({ password })
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.be.eq('Your request was incomplete.');
+          done();
+        });
+    });
+
+    it('should fail to delete user profile if "authorization" is not set in the req header', (done) => {
+      password = 'animalbeing';
+      chai.request(app)
+        .delete('/profile')
+        .send({ password })
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.redirect;
+          expect(res.req.path).to.be.eq('/login');
+          done();
+        });
+    });
+
+    it('should fail to delete user profile if "authorization" in the req header is invalid', (done) => {
+      password = 'animalbeing';
+      chai.request(app)
+        .delete('/profile')
+        .send({ password })
+        .set('authorization', 'Bearer')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.redirect;
+          expect(res.req.path).to.be.eq('/login');
+          done();
+        });
+    });
+
+    it('should fail to delete user profile if the authorization token is invalid', (done) => {
+      password = 'animalbeing';
+      chai.request(app)
+        .delete('/profile')
+        .send({ password })
+        .set('authorization', 'Bearer invalidToken')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.redirect;
+          expect(res.req.path).to.be.eq('/login');
+          done();
+        });
+    });
+
+    it('should fail to delete user profile if the user id generated from the authorization token does not exist', (done) => {
+      password = 'animalbeing';
+      chai.request(app)
+        .delete('/profile')
+        .send({ password })
+        .set('authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjZmJjYjIwLTA4ZTEtMTFlOS05MWZlLTlmMzg0M2Q5NDdmZCIsInVzZXJuYW1lIjoiY2xpbnRvbmFtZSIsImVtYWlsIjoibmt3b2NoYWNsaW50b25AZ21haWwuY29tYW1lIiwiaWF0IjoxNTQ1ODA5OTYzfQ.PhMNI57KYploKDfLqdx0Coije0mNaNq_5eBb7AVQkyI')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.redirect;
+          expect(res.req.path).to.be.eq('/login');
+          done();
+        });
+    });
+
+    it('should fail to delete user profile if the password given was incorrect', (done) => {
+      password = 'password';
+      chai.request(app)
+        .post('/login')
+        .send({ email: 'animal@being.com', password: 'animalbeing' })
+        .end((err, res) => {
+          chai.request(app)
+            .delete('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ password })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('Your password was incorrect.');
+              done();
+            });
+        });
+    });
+
+    it('should delete user profile', (done) => {
+      password = 'animalbeing';
+      chai.request(app)
+        .post('/login')
+        .send({ email: 'animal@being.com', password: 'animalbeing' })
+        .end((err, res) => {
+          chai.request(app)
+            .delete('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ password })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(200);
+              expect(res.body.message).to.be.eq('Your profile has been successfully deleted.');
+              done();
+            });
+        });
+    });
   });
 });
