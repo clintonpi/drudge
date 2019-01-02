@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Clinton Nkwocha">
+    <meta name="description" content="Drudge is a full-stack progressive web to-do app.">
+    <meta name="keywords" content="drudge, to-do, to-do app">
+    <meta name="language" content="English">
+    <meta name="theme-color" content="#f2f2f2">
+    <meta name="viewport" content="width=device-width">
+    <title>User Profile - Drudge</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bundle.css">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="container">
+      <header>
+        <ul>
+          <li><a href="/">Home</a></li>
+        </ul>
+        <div>
+          <img src="/images/drudge-logo.svg" alt="Drudge's logo">
+        </div>
+      </header>
+      <div id="wrap">
+        <h1>User Profile</h1>
+        <main>
+          <div class="details-wrap">
+            <div class="detail spread bar"><span>Username:</span> Human</div>
+            <div class="detail spread bar"><span>Email Address:</span> human@being.com</div>
+            <button id="update-btn" class="action-btn large-btn spread bar">Update Profile</button>
+            <button id="delete-btn" class="action-btn large-btn spread bar delete">Delete Profile</button>  
+          </div>
+        </main>
+        <div class="overlay hidden">
+        </div>
+        <div id="modal-wrap" class="hidden">
+          <div id="update-modal" class="modal none">
+            <p>You are about to update your profile!</p>
+            <button class="close">✕</button>
+            <form action="/profile" id="update-form">
+              <input type="text" name="username" placeholder="Username" maxlength="50" class="spread bar" required>
+              <input type="email" name="email" placeholder="Email address" class="spread bar" required>
+              <input type="password" name="oldPassword" placeholder="Password" minlength="8" maxlength="4000" class="spread bar" required>
+              <div id="change-password-toggle-wrap">
+                <input type="checkbox" id="change-password-toggle">
+                <label for="change-password-toggle">Change password</label>  
+              </div>
+              <input type="submit" value="Save" class="large-btn spread bar">
+            </form>        
+          </div>
+          <div id="delete-modal" class="modal none">
+            <p>You are about to delete your profile!</p>
+            <button class="close">✕</button>
+            <form action="/profile" id="delete-form">
+              <input type="password" name="password" placeholder="Password"  minlength="8" maxlength="4000" class="spread bar" required>
+              <input type="submit" value="Erase my data" class="large-btn spread bar delete">
+            </form>
+          </div>      
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
