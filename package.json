@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf public/dist && NODE_ENV=PRODUCTION webpack --config webpack.config.js --progress --colors",
     "dev": "node ./server/db/createTables.js && rm -rf public/dist  && NODE_ENV=DEVELOPMENT nodemon ./server/app.js",
-    "test": "NODE_ENV=TEST nyc --reporter=text --reporter=html --reporter=lcov mocha './server/**/*.spec.js' --exit",
+    "test": "NODE_ENV=TEST nyc --reporter=text --reporter=html mocha './server/**/*.spec.js' --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
