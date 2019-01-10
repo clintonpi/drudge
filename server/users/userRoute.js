@@ -7,7 +7,15 @@ const {
   signupUser, loginUser, updateUser, deleteUser
 } = UserController;
 
-const { validateUserData, validateLogin, validateProfile } = UserValidator;
+const {
+  validateUsername,
+  validateEmail,
+  validatePassword,
+  checkIfSignupDataIsUnique,
+  checkIfUpdateDataIsUnique,
+  validateLogin,
+  validateProfileAuthentication
+} = UserValidator;
 
 const userRouter = express.Router();
 
@@ -15,7 +23,7 @@ userRouter.route('/signup')
   .get((req, res) => {
     res.status(200).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'signup.html'));
   })
-  .post(validateUserData, signupUser);
+  .post(validateUsername, validateEmail, validatePassword, checkIfSignupDataIsUnique, signupUser);
 
 userRouter.route('/login')
   .get((req, res) => {
@@ -27,7 +35,14 @@ userRouter.route('/profile')
   .get((req, res) => {
     res.status(200).sendFile(path.join(__dirname, '..', '..', 'public', 'dist', 'html', 'profile.html'));
   })
-  .put(validateProfile, validateUserData, updateUser)
-  .delete(validateProfile, deleteUser);
+  .put(
+    validateProfileAuthentication,
+    validateUsername,
+    validateEmail,
+    validatePassword,
+    checkIfUpdateDataIsUnique,
+    updateUser
+  )
+  .delete(validateProfileAuthentication, deleteUser);
 
 module.exports = userRouter;

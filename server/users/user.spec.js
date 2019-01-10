@@ -366,7 +366,7 @@ describe('User Actions', () => {
   });
 
   describe('User Profile', () => {
-    let oldPassword;
+    let oldPassword, newUser;
 
     it('should return a profile page', (done) => {
       chai.request(app)
@@ -460,6 +460,158 @@ describe('User Actions', () => {
               expect(err).to.be.null;
               expect(res).to.have.status(400);
               expect(res.body.message).to.be.eq('Your password was incorrect.');
+              done();
+            });
+        });
+    });
+
+    beforeEach(() => {
+      newUser = {
+        username: 'newUser',
+        email: 'new@user.com',
+        password: 'password',
+        password2: 'password'
+      };
+    });
+
+    it('should update user profile if none of "password" and "password2" are available', (done) => {
+      oldPassword = 'password';
+      chai.request(app)
+        .post('/signup')
+        .send(newUser) // create new user
+        .end((err, res) => {
+          newUser.password = undefined;
+          newUser.password2 = undefined;
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ ...newUser, oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(201);
+              expect(res.body).to.have.property('token');
+              expect(res.body.user.username).to.be.eq(sanitizeStr(newUser.username));
+              expect(isEmail(res.body.user.email)).to.be.true;
+              done();
+            });
+        });
+    });
+
+    it('should fail to update user profile if "username" has already been used by another user', (done) => {
+      oldPassword = 'password';
+      chai.request(app)
+        .post('/login')
+        .send(newUser)
+        .end((err, res) => {
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ username: 'Human', email: 'new@user.com', oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('A user with this username already exists.');
+              done();
+            });
+        });
+    });
+
+    it('should fail to update user profile if "email" has already been used by another user', (done) => {
+      oldPassword = 'password';
+      chai.request(app)
+        .post('/login')
+        .send(newUser)
+        .end((err, res) => {
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ username: 'newUser', email: 'human@being.com', oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('A user with this email address already exists.');
+              done();
+            });
+        });
+    });
+
+    it('should fail to update user profile if "email" and "username" have already been used by two other users', (done) => {
+      oldPassword = 'password';
+      const anotherNewUser = {
+        username: 'anotherNewUser',
+        email: 'anotherNew@user.com',
+        password: 'password',
+        password2: 'password'
+      };
+      chai.request(app)
+        .post('/signup')
+        .send(anotherNewUser) // create another new user
+        .end((err, res) => {
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ username: 'Human', email: 'new@user.com', oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('A user with this username and email address already exists.');
+              done();
+            });
+        });
+    });
+
+    it('should fail to update user profile if "username" has already been used by another user when "email" has been used by you', (done) => {
+      oldPassword = 'password';
+      chai.request(app)
+        .post('/login')
+        .send(newUser)
+        .end((err, res) => {
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ username: 'anotherNewUser', email: 'new@user.com', oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('A user with this username already exists.');
+              done();
+            });
+        });
+    });
+
+    it('should fail to update user profile if "email" has already been used by another user when "username" has been used by you', (done) => {
+      oldPassword = 'password';
+      chai.request(app)
+        .post('/login')
+        .send(newUser)
+        .end((err, res) => {
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ username: 'newUser', email: 'anotherNew@user.com', oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('A user with this email address already exists.');
+              done();
+            });
+        });
+    });
+
+    it('should fail to update user profile if "username" and "email" has already been used by another user', (done) => {
+      oldPassword = 'password';
+      chai.request(app)
+        .post('/login')
+        .send(newUser)
+        .end((err, res) => {
+          chai.request(app)
+            .put('/profile')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ username: 'Human', email: 'human@being.com', oldPassword })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('A user with this username and email address already exists.');
               done();
             });
         });

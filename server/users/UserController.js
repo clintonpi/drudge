@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const uuidv1 = require('uuid/v1');
 const jwt = require('jsonwebtoken');
 const pool = require('../db/index.js');
-const sanitizeStr = require('../../utils');
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -21,28 +20,30 @@ class UserController {
    * @memberof UserController
    */
   static signupUser(req, res) {
-    const { username, email, password } = req.body;
-    const sanitizedUsername = sanitizeStr(username);
+    const { sanitizedUsername, sanitizedEmail } = req;
+    const { password } = req.body;
     const hashPassword = bcrypt.hashSync(password, 10);
 
-    const text = 'INSERT INTO users(id, username, email, password) VALUES($1, $2, $3, $4) RETURNING *;';
-    const values = [uuidv1(), sanitizedUsername, email, hashPassword];
+    const text = 'INSERT INTO users(id, username, email, password) VALUES($1, $2, $3, $4) RETURNING id;';
+    const values = [uuidv1(), sanitizedUsername, sanitizedEmail, hashPassword];
 
     pool.query(text, values)
       .then((result) => {
         const user = result.rows[0];
+        const username = sanitizedUsername;
+        const email = sanitizedEmail;
 
         const token = jwt.sign({
           id: user.id,
-          username: user.username,
-          email: user.email
+          username,
+          email
         }, secretKey);
 
         return res.status(201).json({
           token,
           user: {
-            username: user.username,
-            email: user.email
+            username,
+            email
           }
         });
       })
@@ -59,30 +60,22 @@ class UserController {
    * @memberof UserController
    */
   static loginUser(req, res) {
-    const { email } = req.body;
+    const { id, username, sanitizedEmail } = req;
+    const email = sanitizedEmail;
 
-    const text = 'SELECT id, username, email FROM users WHERE email = $1;';
-    const values = [email];
+    const token = jwt.sign({
+      id,
+      username,
+      email
+    }, secretKey);
 
-    pool.query(text, values)
-      .then((result) => {
-        const user = result.rows[0];
-
-        const token = jwt.sign({
-          id: user.id,
-          username: user.username,
-          email: user.email
-        }, secretKey);
-
-        return res.status(200).json({
-          token,
-          user: {
-            username: user.username,
-            email: user.email
-          }
-        });
-      })
-      .catch(() => res.status(500).json({ message: 'There was an error while logging you in.' }));
+    return res.status(200).json({
+      token,
+      user: {
+        username,
+        email
+      }
+    });
   }
 
   /**
@@ -95,34 +88,39 @@ class UserController {
    * @memberof UserController
    */
   static updateUser(req, res) {
-    const { username, email, password } = req.body;
-    let { token } = req;
-    jwt.verify(token, secretKey, (err, oldUser) => {
-      if (err) return res.redirect('/login');
+    const { password } = req.body;
+    const { sanitizedUsername, sanitizedEmail, userId } = req;
 
-      const text = 'UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4 RETURNING *;';
-      const values = [username, email, bcrypt.hashSync(password, 10), oldUser.id];
+    let text, values;
 
-      pool.query(text, values)
-        .then((result) => {
-          const user = result.rows[0];
+    if (password) {
+      text = 'UPDATE users SET username = $1, email = $2, password = $3 WHERE id = $4;';
+      values = [sanitizedUsername, sanitizedEmail, bcrypt.hashSync(password, 10), userId];
+    } else {
+      text = 'UPDATE users SET username = $1, email = $2 WHERE id = $3;';
+      values = [sanitizedUsername, sanitizedEmail, userId];
+    }
 
-          token = jwt.sign({
-            id: user.id,
-            username: user.username,
-            email: user.email
-          }, secretKey);
+    pool.query(text, values)
+      .then(() => {
+        const username = sanitizedUsername;
+        const email = sanitizedEmail;
 
-          return res.status(201).json({
-            token,
-            user: {
-              username: user.username,
-              email: user.email
-            }
-          });
-        })
-        .catch(() => res.status(500).json({ message: 'There was an error while updating your profile.' }));
-    });
+        const token = jwt.sign({
+          id: userId,
+          username,
+          email
+        }, secretKey);
+
+        return res.status(201).json({
+          token,
+          user: {
+            username,
+            email
+          }
+        });
+      })
+      .catch(() => res.status(500).json({ message: 'There was an error while updating your profile.' }));
   }
 
   /**
@@ -135,17 +133,14 @@ class UserController {
    * @memberof UserController
    */
   static deleteUser(req, res) {
-    const { token } = req;
-    jwt.verify(token, secretKey, (err, user) => {
-      if (err) return res.redirect('/login');
+    const { userId } = req;
 
-      const text = 'DELETE FROM users WHERE id = $1;';
-      const values = [user.id];
+    const text = 'DELETE FROM users WHERE id = $1;';
+    const values = [userId];
 
-      pool.query(text, values)
-        .then(() => res.status(200).json({ message: 'Your profile has been successfully deleted.' }))
-        .catch(() => res.status(500).json({ message: 'There was an error while deleting your profile.' }));
-    });
+    pool.query(text, values)
+      .then(() => res.status(200).json({ message: 'Your profile has been successfully deleted.' }))
+      .catch(() => res.status(500).json({ message: 'There was an error while deleting your profile.' }));
   }
 }
 
