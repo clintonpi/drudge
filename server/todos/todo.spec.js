@@ -9,6 +9,8 @@ const { expect } = chai;
 chai.use(chaiHTTP);
 
 describe('Todo Actions', () => {
+  const user = { email: 'human@being.com', password: 'humanbeing' };
+
   before((done) => {
     pool.query('DELETE FROM todos;')
       .catch((error) => {
@@ -17,9 +19,7 @@ describe('Todo Actions', () => {
 
     chai.request(app)
       .post('/signup')
-      .send({
-        username: 'Human', email: 'human@being.com', password: 'humanbeing', password2: 'humanbeing'
-      })
+      .send({ username: 'Human', ...user, password2: 'humanbeing' })
       .end(() => done());
   });
 
@@ -87,7 +87,7 @@ describe('Todo Actions', () => {
       todo.todoName = undefined;
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .post('/todo')
@@ -106,7 +106,7 @@ describe('Todo Actions', () => {
       todo.todoName = 1;
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .post('/todo')
@@ -125,7 +125,7 @@ describe('Todo Actions', () => {
       todo.todoName = '      ';
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .post('/todo')
@@ -143,7 +143,7 @@ describe('Todo Actions', () => {
     it('should create the todo', (done) => {
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .post('/todo')
@@ -229,7 +229,7 @@ describe('Todo Actions', () => {
     it('should return all the todos for the user', (done) => {
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           const { token } = res.body;
           chai.request(app)
@@ -251,7 +251,7 @@ describe('Todo Actions', () => {
     beforeEach((done) => {
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .get('/todo')
@@ -322,7 +322,7 @@ describe('Todo Actions', () => {
       todo.todoName = undefined;
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .put('/todo')
@@ -341,7 +341,7 @@ describe('Todo Actions', () => {
       todo.todoName = 1;
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .put('/todo')
@@ -360,7 +360,7 @@ describe('Todo Actions', () => {
       todo.todoName = '      ';
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .put('/todo')
@@ -379,7 +379,7 @@ describe('Todo Actions', () => {
       todo.todoId = undefined;
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .put('/todo')
@@ -398,7 +398,7 @@ describe('Todo Actions', () => {
       todo.isDone = undefined;
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .put('/todo')
@@ -417,7 +417,7 @@ describe('Todo Actions', () => {
       todo.isDone = 'invalidStatus';
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .put('/todo')
@@ -436,7 +436,7 @@ describe('Todo Actions', () => {
       todo.todoId = '0105ded0-1536-11e9-a23f-57af3506ee08'; // Valid uuid
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .put('/todo')
@@ -472,7 +472,7 @@ describe('Todo Actions', () => {
     it('should update the todo', (done) => {
       chai.request(app)
         .post('/login')
-        .send({ email: 'human@being.com', password: 'humanbeing' })
+        .send(user)
         .end((err, res) => {
           chai.request(app)
             .put('/todo')
