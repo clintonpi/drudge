@@ -233,19 +233,13 @@ describe('Todo Actions', () => {
         .end((err, res) => {
           const { token } = res.body;
           chai.request(app)
-            .post('/todo')
+            .get('/todo')
             .set('authorization', `Bearer ${token}`)
-            .send({ todoName: 'Write unit tests' })
-            .end(() => {
-              chai.request(app)
-                .get('/todo')
-                .set('authorization', `Bearer ${token}`)
-                .end((err, res) => {
-                  expect(err).to.be.null;
-                  expect(res).to.have.status(200);
-                  expect(res.body).to.have.property('todos');
-                  done();
-                });
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(200);
+              expect(res.body).to.have.property('todos');
+              done();
             });
         });
     });
