@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const isUUID = require('validator/lib/isUUID');
 const pool = require('../db/index');
 const sanitizeStr = require('../../utils');
 
@@ -82,6 +83,8 @@ class TodoValidator {
 
     if (!todoId || (!isDone && isDone !== false)) return res.status(400).json({ message: 'Your request was incomplete.' });
 
+    if (!isUUID(todoId)) return res.status(400).json({ message: 'Your request was invalid.' });
+
     if (typeof isDone !== 'boolean') return res.status(400).json({ message: 'Your todo status was invalid.' });
 
     const text = 'SELECT id, user_id, name, done FROM todos WHERE id = $1;';
@@ -118,8 +121,10 @@ class TodoValidator {
 
     if (!Array.isArray(todosId)) return res.status(400).json({ message: 'Your request was invalid.' });
 
+    const invalidTodosId = todosId.filter(todoId => !isUUID(todoId));
+
     const todosIdLength = todosId.length;
-    if (todosIdLength === 0) return res.status(400).json({ message: 'Your request was invalid.' });
+    if (todosIdLength === 0 || invalidTodosId.length > 0) return res.status(400).json({ message: 'Your request was invalid.' });
 
     const generateParameters = (length) => {
       const parameters = [];

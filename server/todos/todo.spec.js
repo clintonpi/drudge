@@ -432,6 +432,25 @@ describe('Todo Actions', () => {
         });
     });
 
+    it('should fail to update the todo if the todoId is not a valid UUID', (done) => {
+      todo.todoId = '0105ded0'; // Inalid uuid
+      chai.request(app)
+        .post('/login')
+        .send(user)
+        .end((err, res) => {
+          chai.request(app)
+            .put('/todo')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send(todo)
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('Your request was invalid.');
+              done();
+            });
+        });
+    });
+
     it('should fail to update the todo if it does not exist', (done) => {
       todo.todoId = '0105ded0-1536-11e9-a23f-57af3506ee08'; // Valid uuid
       chai.request(app)
@@ -603,6 +622,24 @@ describe('Todo Actions', () => {
             .delete('/todo')
             .set('authorization', `Bearer ${res.body.token}`) // get valid token
             .send({ todosId: [] })
+            .end((err, res) => {
+              expect(err).to.be.null;
+              expect(res).to.have.status(400);
+              expect(res.body.message).to.be.eq('Your request was invalid.');
+              done();
+            });
+        });
+    });
+
+    it('should fail to delete the todo if the/any todoId is not a valid UUID', (done) => {
+      chai.request(app)
+        .post('/login')
+        .send(user)
+        .end((err, res) => {
+          chai.request(app)
+            .delete('/todo')
+            .set('authorization', `Bearer ${res.body.token}`) // get valid token
+            .send({ todosId: '0105ded0' })
             .end((err, res) => {
               expect(err).to.be.null;
               expect(res).to.have.status(400);
