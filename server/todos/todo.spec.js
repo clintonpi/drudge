@@ -262,7 +262,7 @@ describe('Todo Actions', () => {
                 todoId: firstTodo.id,
                 todoName: firstTodo.name,
                 isDone: firstTodo.done
-              }
+              };
               done();
             });
         });
@@ -337,7 +337,7 @@ describe('Todo Actions', () => {
         });
     });
 
-    it('should fail to update the todo if "todoName" was not not a string', (done) => {
+    it('should fail to update the todo if "todoName" was not a string', (done) => {
       todo.todoName = 1;
       chai.request(app)
         .post('/login')
